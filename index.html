@@ -2,169 +2,2906 @@
 <html lang="ru">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Sytem Ascension</title>
-  
-  <!-- PWA -->
-  <link rel="manifest" href="manifest.json">
-  <meta name="theme-color" content="#100c1f">
-  <meta name="apple-mobile-web-app-capable" content="yes">
-  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-  <meta name="apple-mobile-web-app-title" content="Sytem Ascension">
-  <link rel="apple-touch-icon" href="icon-192.png">
-
   <style>
     :root {
-      --bg: #100c1f;
-      --panel: rgba(22, 16, 40, 0.96);
+      --bg: #0c0a1f;
+      --bg-soft: #16132c;
+      --panel: rgba(20, 16, 38, 0.96);
+      --panel-strong: rgba(26, 21, 46, 0.98);
       --line: #5d6aa8;
+      --line-soft: rgba(125, 137, 204, 0.35);
       --text: #f8f1ff;
       --muted: #b8b0d8;
       --accent: #5af0ff;
       --accent-2: #9dff85;
       --gold: #ffd867;
+      --danger: #ff7f96;
+      --warning: #ffbc5e;
+      --shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.35), 0 4px 10px -2px rgba(0, 0, 0, 0.25);
       --radius: 12px;
     }
 
-    * { box-sizing: border-box; }
+    * {
+      box-sizing: border-box;
+    }
+
     body {
       margin: 0;
-      font-family: "Courier New", monospace;
-      background: #0c0a1f;
+      font-family: "Courier New", "Lucida Console", monospace;
       color: var(--text);
+      background: linear-gradient(180deg, #0c0a1f 0%, #17122a 100%);
       min-height: 100vh;
+      letter-spacing: 0.02em;
     }
 
     .app-shell {
       max-width: 1520px;
       margin: 0 auto;
-      padding: 16px;
+      padding: 28px;
       display: grid;
       grid-template-columns: 340px 1fr;
-      gap: 20px;
-    }
-
-    @media (max-width: 900px) {
-      .app-shell { grid-template-columns: 1fr; padding: 12px; }
-      .sidebar { position: static; order: -1; }
+      gap: 24px;
     }
 
     .sidebar, .content-panel, .modal-card {
       border: 2px solid var(--line);
       background: var(--panel);
+      box-shadow: var(--shadow);
       border-radius: var(--radius);
-      box-shadow: 0 10px 30px rgba(0,0,0,0.4);
     }
 
-    /* Остальной CSS остаётся почти таким же, как раньше, но с улучшениями для мобильных */
-    .tab-grid { grid-template-columns: repeat(auto-fit, minmax(110px, 1fr)); }
-    .card-grid, .shop-grid, .skill-grid { grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); }
-
-    .topbar-controls button, .btn {
-      padding: 10px 14px;
-      font-size: 14px;
-    }
-
-    /* Новые стили для мобильной версии */
-    .mobile-top {
-      display: none;
-      background: rgba(16, 12, 31, 0.95);
-      padding: 12px;
-      border-bottom: 2px solid var(--line);
+    .sidebar {
+      border-radius: var(--radius);
+      padding: 24px;
       position: sticky;
-      top: 0;
-      z-index: 100;
+      top: 18px;
+      height: fit-content;
     }
-    @media (max-width: 900px) {
-      .mobile-top { display: flex; align-items: center; gap: 12px; }
+
+    .hero {
+      border-radius: var(--radius);
+      padding: 18px;
+      background: linear-gradient(135deg, rgba(90, 240, 255, 0.18), rgba(157, 255, 133, 0.09));
+      border: 2px solid rgba(255, 255, 255, 0.14);
+      margin-bottom: 20px;
+      box-shadow: var(--shadow);
+    }
+
+    .eyebrow {
+      font-size: 12px;
+      color: var(--accent);
+      letter-spacing: 0.16em;
+      text-transform: uppercase;
+      margin-bottom: 8px;
+    }
+
+    h1, h2, h3, h4, p {
+      margin: 0;
+    }
+
+    .hero h1 {
+      font-size: 28px;
+      margin-bottom: 8px;
+    }
+
+    .muted {
+      color: var(--muted);
+    }
+
+    .progress {
+      height: 12px;
+      border-radius: 9999px;
+      overflow: hidden;
+      background: rgba(255, 255, 255, 0.09);
+      margin-top: 10px;
+      border: 2px solid var(--line-soft);
+    }
+
+    .progress > span {
+      display: block;
+      height: 100%;
+      border-radius: inherit;
+      background: linear-gradient(90deg, var(--accent), var(--accent-2));
+      width: 0;
+      transition: width 0.35s ease;
+    }
+
+    .quick-stats, .stat-grid, .tab-grid, .card-grid, .skill-grid, .shop-grid, .planner-grid, .diary-grid, .boss-grid, .mini-grid {
+      display: grid;
+      gap: 14px;
+    }
+
+    .quick-stats {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      margin: 18px 0;
+    }
+
+    .stat-tile, .info-card, .quest-card, .skill-card, .shop-card, .list-card, .boss-card, .element-card {
+      border-radius: var(--radius);
+      border: 2px solid var(--line);
+      background: rgba(255,255,255,0.04);
+      padding: 16px;
+      box-shadow: var(--shadow);
+    }
+
+    .stat-tile strong, .info-card strong {
+      display: block;
+      font-size: 24px;
+      margin-top: 6px;
+    }
+
+    .content-panel {
+      border-radius: var(--radius);
+      padding: 26px;
+      min-height: calc(100vh - 56px);
+      position: relative;
+      overflow: hidden;
+    }
+
+    .topbar {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: space-between;
+      align-items: center;
+      gap: 16px;
+      margin-bottom: 22px;
+    }
+
+    .topbar-controls {
+      display: flex;
+      gap: 10px;
+      flex-wrap: wrap;
+    }
+
+    .tab-grid {
+      grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+      margin-bottom: 22px;
+    }
+
+    .tab-btn, button, input, textarea, select {
+      font: inherit;
+    }
+
+    .tab-btn, .btn {
+      border: 2px solid var(--line);
+      background: rgba(255,255,255,0.05);
+      color: var(--text);
+      border-radius: var(--radius);
+      padding: 12px 16px;
+      cursor: pointer;
+      transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+      box-shadow: var(--shadow);
+      text-transform: uppercase;
+    }
+
+    .tab-btn:hover, .btn:hover {
+      transform: translateY(-2px);
+      border-color: var(--accent);
+      box-shadow: 0 8px 20px rgba(90, 240, 255, 0.25);
+    }
+
+    .tab-btn.active, .btn.primary {
+      background: linear-gradient(135deg, rgba(90, 240, 255, 0.28), rgba(157, 255, 133, 0.22));
+      border-color: var(--accent-2);
+    }
+
+    .btn.warn {
+      background: rgba(255, 181, 92, 0.15);
+      border-color: rgba(255, 181, 92, 0.4);
+    }
+
+    .btn.danger {
+      background: rgba(255, 123, 123, 0.15);
+      border-color: rgba(255, 123, 123, 0.4);
+    }
+
+    .section {
+      display: none;
+      animation: rise 0.3s ease;
+    }
+
+    .section.active {
+      display: block;
+    }
+
+    @keyframes rise {
+      from { opacity: 0; transform: translateY(12px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    .section-head {
+      display: flex;
+      justify-content: space-between;
+      gap: 16px;
+      align-items: flex-start;
+      margin-bottom: 18px;
+      flex-wrap: wrap;
+    }
+
+    .section-head h2 {
+      font-size: 30px;
+      margin-bottom: 4px;
+    }
+
+    .card-grid {
+      grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+    }
+
+    .skill-grid {
+      grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+    }
+
+    .shop-grid, .planner-grid, .diary-grid, .boss-grid {
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    }
+
+    .mini-grid {
+      grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+    }
+
+    .quest-card h4, .skill-card h4, .shop-card h4, .boss-card h4 {
+      margin-bottom: 8px;
+      font-size: 18px;
+    }
+
+    .chip-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin: 12px 0;
+    }
+
+    .chip {
+      padding: 6px 10px;
+      border-radius: var(--radius);
+      background: rgba(255,255,255,0.07);
+      border: 2px solid rgba(255,255,255,0.1);
+      font-size: 13px;
+      color: var(--muted);
+    }
+
+    .chip.good {
+      color: var(--accent-2);
+      border-color: rgba(124, 248, 181, 0.3);
+    }
+
+    .chip.gold {
+      color: var(--gold);
+      border-color: rgba(248, 211, 106, 0.35);
+    }
+
+    .chip.danger {
+      color: #ffb4b4;
+      border-color: rgba(255, 123, 123, 0.35);
+    }
+
+    .quest-actions, .planner-actions, .row-actions, .gate-actions {
+      display: flex;
+      gap: 10px;
+      flex-wrap: wrap;
+      align-items: center;
+      margin-top: 14px;
+    }
+
+    input, textarea, select {
+      width: 100%;
+      padding: 12px 16px;
+      border-radius: var(--radius);
+      border: 2px solid var(--line);
+      background: rgba(255,255,255,0.06);
+      color: var(--text);
+      outline: none;
+    }
+
+    textarea {
+      min-height: 120px;
+      resize: vertical;
+    }
+
+    .form-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+      gap: 12px;
+      margin-top: 14px;
+    }
+
+    .split {
+      display: grid;
+      grid-template-columns: 1.15fr 0.85fr;
+      gap: 18px;
+    }
+
+    .list {
+      display: grid;
+      gap: 12px;
+      margin-top: 12px;
+    }
+
+    .list-item {
+      border-radius: var(--radius);
+      border: 2px solid var(--line);
+      padding: 14px;
+      background: rgba(255,255,255,0.04);
+      display: grid;
+      gap: 8px;
+    }
+
+    .list-item.done {
+      opacity: 0.75;
+      border-color: rgba(124, 248, 181, 0.3);
+    }
+
+    .list-title {
+      display: flex;
+      justify-content: space-between;
+      gap: 12px;
+      align-items: flex-start;
+    }
+
+    .boss-health {
+      margin-top: 10px;
+    }
+
+    .two-col-stats {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 12px;
+      margin-top: 16px;
+    }
+
+    .rank-badge {
+      font-size: 12px;
+      letter-spacing: 0.16em;
+      text-transform: uppercase;
+      color: var(--accent);
+    }
+
+    .notice {
+      padding: 14px 16px;
+      margin-bottom: 18px;
+      border-radius: var(--radius);
+      border: 2px solid rgba(104, 225, 253, 0.3);
+      background: rgba(104, 225, 253, 0.09);
+      color: #d5f7ff;
+      box-shadow: var(--shadow);
+    }
+
+    .element-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+      gap: 14px;
+    }
+
+    .element-card strong {
+      display: block;
+      margin-top: 8px;
+      font-size: 22px;
+    }
+
+    .modal {
+      position: fixed;
+      inset: 0;
+      background: rgba(8, 6, 22, 0.82);
+      display: none;
+      align-items: center;
+      justify-content: center;
+      padding: 20px;
+      z-index: 50;
+    }
+
+    .modal.open {
+      display: flex;
+    }
+
+    .modal-card {
+      width: min(520px, 100%);
+      border-radius: var(--radius);
+      padding: 22px;
+      background: var(--panel-strong);
+      box-shadow: var(--shadow);
+    }
+
+    .log {
+      display: grid;
+      gap: 10px;
+      margin-top: 14px;
+      max-height: 340px;
+      overflow: auto;
+      padding-right: 6px;
+    }
+
+    .log-item {
+      border-left: 4px solid var(--accent);
+      padding: 10px 12px;
+      background: rgba(255,255,255,0.04);
+      border-radius: var(--radius);
+      color: var(--muted);
+    }
+
+    .shop-group {
+      margin-bottom: 26px;
+    }
+
+    .shop-group-head {
+      margin-bottom: 14px;
+      padding: 14px 16px;
+      border: 2px solid var(--line);
+      background: rgba(255,255,255,0.04);
+      box-shadow: var(--shadow);
+      border-radius: var(--radius);
+    }
+
+    .shop-group-head h3 {
+      margin-bottom: 6px;
+      text-transform: uppercase;
+    }
+
+    .content-panel::before {
+      content: "";
+      position: absolute;
+      inset: 0;
+      pointer-events: none;
+      background: linear-gradient(180deg, rgba(255,255,255,0.06) 0 4px, transparent 4px 100%);
+      opacity: 0.4;
+      z-index: 0;
+    }
+
+    .content-panel > * {
+      position: relative;
+      z-index: 1;
+    }
+
+    .hero h1,
+    .section-head h2,
+    .shop-group-head h3,
+    .list-card h3 {
+      text-shadow: 3px 3px 0 rgba(0, 0, 0, 0.4);
+      letter-spacing: 0.04em;
+    }
+
+    .tab-btn.active,
+    .btn.primary {
+      box-shadow: 0 0 0 2px rgba(255,255,255,0.08), 0 8px 20px rgba(90, 240, 255, 0.2);
+    }
+
+    .quest-card,
+    .boss-card,
+    .shop-card,
+    .skill-card,
+    .program-card,
+    .program-quest-card {
+      position: relative;
+      overflow: hidden;
+    }
+
+    .programs-shell {
+      display: grid;
+      grid-template-columns: 0.92fr 1.08fr;
+      gap: 18px;
+    }
+
+    .program-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+      gap: 14px;
+    }
+
+    .program-card,
+    .program-detail,
+    .program-quest-card,
+    .program-guide {
+      border: 2px solid var(--line);
+      background: rgba(255,255,255,0.04);
+      box-shadow: var(--shadow);
+      border-radius: var(--radius);
+    }
+
+    .program-card {
+      padding: 16px;
+      cursor: pointer;
+      transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+
+    .program-card:hover {
+      transform: translateY(-3px);
+      border-color: var(--accent);
+    }
+
+    .program-card.active {
+      border-color: var(--gold);
+      background: linear-gradient(135deg, rgba(255, 216, 103, 0.12), rgba(90, 240, 255, 0.08));
+    }
+
+    .program-detail {
+      padding: 18px;
+    }
+
+    .program-hero {
+      padding: 18px;
+      border: 2px solid rgba(255,255,255,0.12);
+      background: linear-gradient(135deg, rgba(90, 240, 255, 0.15), rgba(157, 255, 133, 0.08));
+      box-shadow: var(--shadow);
+      margin-bottom: 16px;
+      border-radius: var(--radius);
+    }
+
+    .program-kpis,
+    .program-reference-list,
+    .program-quest-grid,
+    .program-guide-grid {
+      display: grid;
+      gap: 12px;
+    }
+
+    .program-kpis {
+      grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+      margin: 14px 0;
+    }
+
+    .program-guide-grid,
+    .program-quest-grid {
+      grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+    }
+
+    .program-guide,
+    .program-quest-card {
+      padding: 14px;
+      border-radius: var(--radius);
+    }
+
+    .slot-row {
+      display: flex;
+      justify-content: space-between;
+      gap: 10px;
+      align-items: center;
+    }
+
+    .btn.small {
+      padding: 8px 10px;
+      font-size: 12px;
+    }
+
+    .footer-note {
+      margin-top: 12px;
+      color: var(--muted);
+      font-size: 13px;
+    }
+
+    @media (max-width: 1150px) {
+      .app-shell, .split {
+        grid-template-columns: 1fr;
+      }
+      .sidebar {
+        position: static;
+      }
+      .programs-shell {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    @media (max-width: 720px) {
+      .app-shell {
+        padding: 16px;
+      }
+      .content-panel, .sidebar {
+        padding: 18px;
+      }
+      .tab-grid {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+      }
+      .quick-stats, .two-col-stats {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+      }
     }
   </style>
 </head>
 <body>
+  <div class="app-shell">
+    <aside class="sidebar">
+      <div class="hero">
+        <div class="eyebrow">Sytem Ascension</div>
+        <h1 id="playerName">Игрок</h1>
+        <p class="muted">Полноценное локальное RPG-приложение с сохранением прогресса, заданиями, вратами и журналом развития.</p>
+        <div class="progress"><span id="levelProgress"></span></div>
+        <div class="footer-note" id="levelSummary"></div>
+      </div>
 
-  <!-- Мобильная верхняя панель -->
-  <div class="mobile-top">
-    <button class="btn" onclick="toggleSidebar()">☰</button>
-    <h2 style="margin:0; font-size:18px;" id="mobilePlayerName">Игрок</h2>
+      <div class="quick-stats">
+        <div class="stat-tile">
+          <span class="muted">Уровень</span>
+          <strong id="sidebarLevel">1</strong>
+        </div>
+        <div class="stat-tile">
+          <span class="muted">Золото</span>
+          <strong id="sidebarGold">0</strong>
+        </div>
+        <div class="stat-tile">
+          <span class="muted">Очки навыков</span>
+          <strong id="sidebarSkillPoints">0</strong>
+        </div>
+        <div class="stat-tile">
+          <span class="muted">Серия дней</span>
+          <strong id="sidebarStreak">0</strong>
+        </div>
+      </div>
+
+      <div class="info-card">
+        <span class="muted">Боевой рейтинг</span>
+        <strong id="sidebarPower">0</strong>
+        <div class="chip-row">
+          <span class="chip good" id="expBonusChip">EXP +0%</span>
+          <span class="chip gold" id="goldBonusChip">Gold +0%</span>
+          <span class="chip" id="damageBonusChip">Урон +0%</span>
+        </div>
+      </div>
+
+      <div class="two-col-stats">
+        <div class="info-card">
+          <span class="muted">Сила</span>
+          <strong id="statStrength">0</strong>
+        </div>
+        <div class="info-card">
+          <span class="muted">Интеллект</span>
+          <strong id="statIntellect">0</strong>
+        </div>
+        <div class="info-card">
+          <span class="muted">Воля</span>
+          <strong id="statWill">0</strong>
+        </div>
+      </div>
+
+      <div class="info-card" style="margin-top:16px;">
+        <span class="muted">Экипировка</span>
+        <div class="list" id="equipmentList"></div>
+      </div>
+
+      <div class="info-card" style="margin-top:16px;">
+        <span class="muted">Стихии</span>
+        <div class="list" id="elementSummary"></div>
+      </div>
+    </aside>
+
+    <main class="content-panel">
+      <div class="topbar">
+        <div>
+          <div class="eyebrow">Локальная база знаний сохранена</div>
+          <h2>Панель развития героя</h2>
+        </div>
+        <div class="topbar-controls">
+          <button class="btn" id="renameBtn">Переименовать</button>
+          <button class="btn warn" id="exportBtn">Экспорт сейва</button>
+          <button class="btn danger" id="resetBtn">Полный сброс</button>
+        </div>
+      </div>
+
+      <div class="tab-grid" id="tabs"></div>
+
+      <section class="section active" data-section="overview">
+        <div class="section-head">
+          <div>
+            <h2>Основа</h2>
+            <p class="muted">Сводка прогресса, формулы наград, активные врата и состояние системы.</p>
+          </div>
+        </div>
+        <div class="notice" id="dailyNotice"></div>
+        <div class="card-grid" id="overviewCards"></div>
+        <div class="split" style="margin-top:18px;">
+          <div class="list-card">
+            <div class="section-head">
+              <div>
+                <h3>Недавние события</h3>
+                <p class="muted">Последние выполнения заданий, победы и покупки.</p>
+              </div>
+            </div>
+            <div class="log" id="historyLog"></div>
+          </div>
+          <div class="list-card">
+            <div class="section-head">
+              <div>
+                <h3>Формула наград</h3>
+                <p class="muted">Ты сам задаёшь XP, а золото и урон по боссу считаются автоматически.</p>
+              </div>
+            </div>
+            <div class="list">
+              <div class="list-item">
+                <strong>Золото за задание</strong>
+                <span class="muted" id="questFormulaView"></span>
+              </div>
+              <div class="list-item">
+                <strong>Награда за босса</strong>
+                <span class="muted" id="bossFormulaView"></span>
+              </div>
+              <div class="list-item">
+                <strong>Очки навыков</strong>
+                <span class="muted">Каждые 3 уровня автоматически выдаётся 1 очко навыков.</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section class="section" data-section="quests">
+        <div class="section-head">
+          <div>
+            <h2>Квесты</h2>
+            <p class="muted">Есть вкладка основы с ежедневными заданиями и три бесконечных ветки: сила, интеллект и воля.</p>
+          </div>
+        </div>
+        <div class="tab-grid" id="questTabs"></div>
+        <div id="questLists"></div>
+      </section>
+
+      <section class="section" data-section="programs">
+        <div class="section-head">
+          <div>
+            <h2>Программы</h2>
+            <p class="muted">15 больших игровых программ саморазвития с подсказками, справками, целями и собственными ежедневными заданиями.</p>
+          </div>
+        </div>
+        <div class="programs-shell">
+          <div class="list-card">
+            <div class="section-head">
+              <div>
+                <h3>Каталог программ</h3>
+                <p class="muted">Выбери траекторию и открой отдельный экран ежедневных квестов по этой цели.</p>
+              </div>
+            </div>
+            <div class="program-grid" id="programsGrid"></div>
+          </div>
+          <div class="list-card">
+            <div id="programDetail"></div>
+          </div>
+        </div>
+      </section>
+
+      <section class="section" data-section="gates">
+        <div class="section-head">
+          <div>
+            <h2>Врата и боссы</h2>
+            <p class="muted">Открывай врата по рангу, получай случайного босса из 150, пробивай его заданиями и забирай золото по формуле.</p>
+          </div>
+        </div>
+        <div class="split">
+          <div class="list-card">
+            <h3>Ранги врат</h3>
+            <div class="boss-grid" id="gateRanks"></div>
+          </div>
+          <div class="list-card">
+            <h3>Текущая охота</h3>
+            <div id="activeGateBoss"></div>
+            <div style="margin-top:18px;">
+              <h3>Этажные боссы</h3>
+              <p class="muted">Раз в 10 уровней появляется отдельный владыка этажа с уникальным именем.</p>
+              <div class="boss-grid" id="milestoneBosses"></div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section class="section" data-section="shop">
+        <div class="section-head">
+          <div>
+            <h2>Магазин</h2>
+            <p class="muted">Много новых предметов, экипировка, расходники и загадочная шкатулка для выбивания стихий.</p>
+          </div>
+        </div>
+        <div class="shop-grid" id="shopGrid"></div>
+      </section>
+
+      <section class="section" data-section="inventory">
+        <div class="section-head">
+          <div>
+            <h2>Инвентарь и стихии</h2>
+            <p class="muted">Экипируй вещи, используй шкатулки и следи за бонусами стихий.</p>
+          </div>
+        </div>
+        <div class="split">
+          <div class="list-card">
+            <h3>Предметы</h3>
+            <div class="list" id="inventoryList"></div>
+          </div>
+          <div class="list-card">
+            <h3>Стихийный контур</h3>
+            <div class="element-grid" id="elementGrid"></div>
+          </div>
+        </div>
+      </section>
+
+      <section class="section" data-section="skills">
+        <div class="section-head">
+          <div>
+            <h2>Навыки</h2>
+            <p class="muted">30 навыков для развития. Покупка требует очки, которые приходят каждые 3 уровня.</p>
+          </div>
+          <div class="chip-row">
+            <span class="chip good" id="skillsOwnedChip">Открыто 0/30</span>
+            <span class="chip gold" id="skillsPointsChip">Очков: 0</span>
+          </div>
+        </div>
+        <div class="skill-grid" id="skillsGrid"></div>
+      </section>
+
+      <section class="section" data-section="planner">
+        <div class="section-head">
+          <div>
+            <h2>Планер</h2>
+            <p class="muted">Полноценное планирование: задачи, сроки, привычки, статусы и отслеживание выполнения.</p>
+          </div>
+        </div>
+        <div class="split">
+          <div class="list-card">
+            <h3>Добавить запись</h3>
+            <div class="form-grid">
+              <input id="plannerTitle" placeholder="Название дела">
+              <input id="plannerXp" type="number" min="0" step="5" placeholder="XP за выполнение">
+              <input id="plannerDue" type="date">
+              <select id="plannerType">
+                <option value="task">Задача</option>
+                <option value="habit">Привычка</option>
+                <option value="project">Проект</option>
+              </select>
+            </div>
+            <textarea id="plannerNote" placeholder="Описание или подзадачи"></textarea>
+            <div class="planner-actions">
+              <button class="btn primary" id="addPlannerBtn">Сохранить дело</button>
+            </div>
+          </div>
+          <div class="list-card">
+            <h3>Текущие дела</h3>
+            <div class="list" id="plannerList"></div>
+          </div>
+        </div>
+      </section>
+
+      <section class="section" data-section="diary">
+        <div class="section-head">
+          <div>
+            <h2>Дневник</h2>
+            <p class="muted">Записывай итоги дня, мысли, прогресс и отслеживай историю развития.</p>
+          </div>
+        </div>
+        <div class="split">
+          <div class="list-card">
+            <h3>Новая запись</h3>
+            <div class="form-grid">
+              <input id="diaryTitle" placeholder="Заголовок записи">
+              <select id="diaryMood">
+                <option value="Спокойно">Спокойно</option>
+                <option value="Заряженно">Заряженно</option>
+                <option value="Напряжённо">Напряжённо</option>
+                <option value="Гордо">Гордо</option>
+              </select>
+            </div>
+            <textarea id="diaryText" placeholder="Что получилось, что было сложно, что улучшить завтра"></textarea>
+            <div class="planner-actions">
+              <button class="btn primary" id="addDiaryBtn">Добавить запись</button>
+            </div>
+          </div>
+          <div class="list-card">
+            <h3>История записей</h3>
+            <div class="list" id="diaryList"></div>
+          </div>
+        </div>
+      </section>
+    </main>
   </div>
 
-  <div class="app-shell">
-    <!-- Весь твой оригинальный HTML (sidebar + content-panel) остаётся здесь -->
-    <!-- Я оставил его без изменений, только добавил новые кнопки и улучшения -->
-
-    <!-- ... (весь твой старый body) ... -->
-
-    <!-- Добавленные кнопки синхронизации в topbar -->
-    <div class="topbar-controls" style="margin-left:auto; display:flex; gap:8px;">
-      <button class="btn" onclick="exportSaveCode()">📤 Код сохранения</button>
-      <button class="btn" onclick="showImportModal()">📥 Загрузить код</button>
-      <button class="btn" id="renameBtn">Переименовать</button>
-      <button class="btn warn" onclick="exportSave()">Экспорт файла</button>
-      <button class="btn danger" onclick="confirmReset()">Сброс</button>
-    </div>
-
-    <!-- Модальное окно для импорта -->
-    <div class="modal" id="importModal">
-      <div class="modal-card">
-        <h3>Загрузить прогресс</h3>
-        <p class="muted">Вставь код сохранения из другого устройства:</p>
-        <textarea id="importCode" rows="6" style="width:100%; font-family:monospace;"></textarea>
-        <div style="margin-top:16px; text-align:right;">
-          <button class="btn" onclick="closeImportModal()">Отмена</button>
-          <button class="btn primary" onclick="importSaveCode()">Загрузить</button>
+  <div class="modal" id="modal">
+    <div class="modal-card">
+      <div class="section-head">
+        <div>
+          <h3 id="modalTitle">Сообщение</h3>
+          <p class="muted" id="modalSubtitle"></p>
         </div>
+      </div>
+      <div id="modalBody"></div>
+      <div class="planner-actions">
+        <button class="btn primary" id="modalConfirm">Подтвердить</button>
+        <button class="btn" id="modalClose">Закрыть</button>
       </div>
     </div>
   </div>
 
   <script>
-    // === ВЕСЬ ТВОЙ СТАРЫЙ JAVASCRIPT КОД (из предыдущей версии) ===
-    // (вставь сюда весь <script> из твоего рабочего файла)
+    const STORAGE_KEY = "sytem-ascension-save-v1";
 
-    // === НОВЫЕ ФУНКЦИИ СИНХРОНИЗАЦИИ ===
+    const TABS = [
+      { id: "overview", label: "Основа" },
+      { id: "quests", label: "Квесты" },
+      { id: "programs", label: "Программы" },
+      { id: "gates", label: "Врата" },
+      { id: "shop", label: "Магазин" },
+      { id: "inventory", label: "Инвентарь" },
+      { id: "skills", label: "Навыки" },
+      { id: "planner", label: "Планер" },
+      { id: "diary", label: "Дневник" }
+    ];
 
-    function exportSaveCode() {
-      const data = JSON.stringify(state);
-      const encoded = btoa(data);
-      navigator.clipboard.writeText(encoded).then(() => {
-        alert("✅ Код сохранения скопирован в буфер обмена!\nОтправь его себе в Telegram / заметки и вставь на другом устройстве.");
+    const QUEST_BRANCHES = [
+      { id: "base", label: "Основа", daily: true, stat: "Основа", prefix: "Основа дня" },
+      { id: "strength", label: "Сила", daily: false, stat: "Сила", prefix: "Тренировка силы" },
+      { id: "intellect", label: "Интеллект", daily: false, stat: "Интеллект", prefix: "Прокачка интеллекта" },
+      { id: "will", label: "Воля", daily: false, stat: "Воля", prefix: "Тренировка воли" }
+    ];
+
+    const GATE_RANKS = [
+      { id: "E", minLevel: 1, bossHp: 900, rewardScale: 1.0 },
+      { id: "D", minLevel: 12, bossHp: 1500, rewardScale: 1.2 },
+      { id: "C", minLevel: 24, bossHp: 2400, rewardScale: 1.45 },
+      { id: "B", minLevel: 40, bossHp: 3600, rewardScale: 1.7 },
+      { id: "A", minLevel: 58, bossHp: 5200, rewardScale: 2.0 },
+      { id: "S", minLevel: 80, bossHp: 7300, rewardScale: 2.35 },
+      { id: "SS", minLevel: 108, bossHp: 9800, rewardScale: 2.7 },
+      { id: "SSS", minLevel: 138, bossHp: 12800, rewardScale: 3.05 },
+      { id: "EX", minLevel: 176, bossHp: 16600, rewardScale: 3.5 },
+      { id: "Mythic", minLevel: 220, bossHp: 21400, rewardScale: 4.1 }
+    ];
+
+    const ELEMENTS = {
+      fire: { icon: "Огонь", description: "Даёт +8% урона по боссам за уровень стихии." },
+      water: { icon: "Вода", description: "Даёт -4% к цене магазина за уровень стихии." },
+      air: { icon: "Воздух", description: "Даёт +5% к золоту с боссов и к урону от квестов." },
+      earth: { icon: "Земля", description: "Даёт +4 ко всем статам за уровень стихии." },
+      light: { icon: "Свет", description: "Даёт +6% к опыту за задания и боссов за уровень стихии." }
+    };
+
+    const SKILLS = [
+      ["Торгаш", "Скидка 10% в магазине.", 1, { shopDiscount: 0.10 }],
+      ["Архивариус", "Дневник даёт +8% опыта при сохранении записи раз в день.", 1, { diaryExp: 0.08 }],
+      ["Стальной режим", "+6% урона по боссам.", 1, { damage: 0.06 }],
+      ["Точный расчёт", "+7% золота за задания.", 1, { questGold: 0.07 }],
+      ["Учёный режим", "+8% опыта за задания интеллекта.", 1, { intellectExp: 0.08 }],
+      ["Железная воля", "+8% опыта за задания воли.", 1, { willExp: 0.08 }],
+      ["Боевой темп", "+8% опыта за задания силы.", 1, { strengthExp: 0.08 }],
+      ["Инвестор", "+6% золота с боссов.", 1, { bossGold: 0.06 }],
+      ["Полевой командир", "+10% урона по этажным боссам.", 2, { milestoneDamage: 0.10 }],
+      ["Собиратель", "+1 случайный расходник каждые 10 покупок.", 2, { lootCycle: 1 }],
+      ["Наставник", "+10% общего опыта.", 2, { exp: 0.10 }],
+      ["Коллекционер", "+6% к силе, интеллекту и воле от экипировки.", 2, { gearStats: 0.06 }],
+      ["Пульс разгона", "+12% урона, если серия дней 7+.", 2, { streakDamage: 0.12 }],
+      ["Хранитель рун", "+1 уровень ко всем стихиям при первой покупке шкатулки после перезагрузки сейва не даётся, только при выпадении.", 3, { runeLore: 1 }],
+      ["Прагматик", "+12% золота за задания с XP 100+.", 2, { highXpGold: 0.12 }],
+      ["Титан", "+10 к силе.", 2, { strengthFlat: 10 }],
+      ["Менталист", "+10 к интеллекту.", 2, { intellectFlat: 10 }],
+      ["Аскет", "+10 к воле.", 2, { willFlat: 10 }],
+      ["Пробивной удар", "+15% урона по боссам ранга A и выше.", 2, { highRankDamage: 0.15 }],
+      ["Бонусная ведомость", "+15% золота за победы над вратами.", 2, { gateGold: 0.15 }],
+      ["Светоч", "+8% общего опыта и +8% золота.", 3, { exp: 0.08, gold: 0.08 }],
+      ["Стратег", "+12% опыта от планера при закрытии дела.", 1, { plannerExp: 0.12 }],
+      ["Доминатор", "+18% урона по боссам при здоровье босса выше 50%.", 2, { openerDamage: 0.18 }],
+      ["Финишер", "+22% урона по боссам при здоровье босса ниже 25%.", 2, { finisherDamage: 0.22 }],
+      ["Дисциплина", "+1 к серии дней за первое завершённое ежедневное задание дня.", 2, { discipline: 1 }],
+      ["Ловчий ветров", "+8% бонуса стихии Воздуха.", 1, { airBoost: 0.08 }],
+      ["Рудознатец", "+8% бонуса стихии Земли.", 1, { earthBoost: 0.08 }],
+      ["Хранитель огня", "+8% бонуса стихии Огня.", 1, { fireBoost: 0.08 }],
+      ["Морская сделка", "+8% бонуса стихии Воды.", 1, { waterBoost: 0.08 }],
+      ["Солнечный кодекс", "+8% бонуса стихии Света.", 1, { lightBoost: 0.08 }]
+    ].map((entry, index) => ({
+      id: `skill-${index + 1}`,
+      name: entry[0],
+      desc: entry[1],
+      cost: entry[2],
+      effects: entry[3]
+    }));
+
+    const SHOP_ITEMS = [
+      { id: "gear-rusty-sword", name: "Ржавый меч", slot: "weapon", type: "gear", category: "system", cost: 600, desc: "+5 к силе, +4% урона.", stats: { strength: 5 }, bonuses: { damage: 0.04 }, tag: "Системный" },
+      { id: "gear-wood-shield", name: "Деревянный щит", slot: "armor", type: "gear", category: "system", cost: 640, desc: "+5 к воле, +4% опыта.", stats: { will: 5 }, bonuses: { exp: 0.04 }, tag: "Системный" },
+      { id: "gear-copper-ring", name: "Медное кольцо", slot: "accessory", type: "gear", category: "system", cost: 720, desc: "+5 к интеллекту, +5% золота.", stats: { intellect: 5 }, bonuses: { gold: 0.05 }, tag: "Системный" },
+      { id: "gear-old-keyboard", name: "Старая клавиатура", slot: "weapon", type: "gear", category: "system", cost: 930, desc: "+8 к интеллекту, +6% урона.", stats: { intellect: 8 }, bonuses: { damage: 0.06 }, tag: "Системный" },
+      { id: "gear-worn-backpack", name: "Потёртый рюкзак", slot: "armor", type: "gear", category: "system", cost: 990, desc: "+7 к воле, +6% опыта.", stats: { will: 7 }, bonuses: { exp: 0.06 }, tag: "Системный" },
+      { id: "gear-shadow-cloak", name: "Плащ тени", slot: "armor", type: "gear", category: "system", cost: 1900, desc: "+12 к воле и +10% урона.", stats: { will: 12 }, bonuses: { damage: 0.10 }, tag: "Системный" },
+      { id: "gear-system-eye", name: "Око системы", slot: "accessory", type: "gear", category: "system", cost: 2100, desc: "+14 к интеллекту и +12% золота.", stats: { intellect: 14 }, bonuses: { gold: 0.12 }, tag: "Системный" },
+      { id: "gear-cpp-book", name: "Справочник по C++", slot: "weapon", type: "gear", category: "system", cost: 1700, desc: "+10 к интеллекту и +9% урона.", stats: { intellect: 10 }, bonuses: { damage: 0.09 }, tag: "Системный" },
+      { id: "gear-blood-axe", name: "Багровый топор", slot: "weapon", type: "gear", category: "system", cost: 2400, desc: "+18 к силе и +12% урона.", stats: { strength: 18 }, bonuses: { damage: 0.12 }, tag: "Системный" },
+      { id: "gear-titan-belt", name: "Пояс титана", slot: "armor", type: "gear", category: "system", cost: 2600, desc: "+16 к силе и +10% опыта.", stats: { strength: 16 }, bonuses: { exp: 0.10 }, tag: "Системный" },
+      { id: "gear-lucid-band", name: "Лента ясности", slot: "accessory", type: "gear", category: "system", cost: 2500, desc: "+16 к интеллекту и +10% опыта.", stats: { intellect: 16 }, bonuses: { exp: 0.10 }, tag: "Системный" },
+      { id: "gear-vow-chain", name: "Цепь клятвы", slot: "accessory", type: "gear", category: "system", cost: 2550, desc: "+16 к воле и +11% золота.", stats: { will: 16 }, bonuses: { gold: 0.11 }, tag: "Системный" },
+      { id: "gear-solar-spear", name: "Солнечное копьё", slot: "weapon", type: "gear", category: "system", cost: 3600, desc: "+24 к силе и +15% урона.", stats: { strength: 24 }, bonuses: { damage: 0.15 }, tag: "Системный" },
+      { id: "gear-archive-coat", name: "Архивный плащ", slot: "armor", type: "gear", category: "system", cost: 3450, desc: "+18 к интеллекту, +14% опыта.", stats: { intellect: 18 }, bonuses: { exp: 0.14 }, tag: "Системный" },
+      { id: "gear-obelisk-ring", name: "Кольцо обелиска", slot: "accessory", type: "gear", category: "system", cost: 3950, desc: "+20 ко всем статам и +12% золота.", stats: { strength: 7, intellect: 7, will: 6 }, bonuses: { gold: 0.12 }, tag: "Системный" },
+      { id: "gear-wyrm-mail", name: "Доспех вирма", slot: "armor", type: "gear", category: "system", cost: 4700, desc: "+24 к воле и +16% урона по боссам.", stats: { will: 24 }, bonuses: { damage: 0.16 }, tag: "Системный" },
+      { id: "gear-crown-operator", name: "Корона оператора", slot: "accessory", type: "gear", category: "system", cost: 5200, desc: "+22 к интеллекту и +18% золота.", stats: { intellect: 22 }, bonuses: { gold: 0.18 }, tag: "Системный" },
+      { id: "gear-horizon-blade", name: "Клинок горизонта", slot: "weapon", type: "gear", category: "system", cost: 6200, desc: "+30 к силе, +20% урона.", stats: { strength: 30 }, bonuses: { damage: 0.20 }, tag: "Системный" },
+      { id: "gear-aegis-night", name: "Эгида ночи", slot: "armor", type: "gear", category: "system", cost: 6500, desc: "+28 к воле, +18% опыта.", stats: { will: 28 }, bonuses: { exp: 0.18 }, tag: "Системный" },
+      { id: "gear-orbit-sigil", name: "Печать орбиты", slot: "accessory", type: "gear", category: "system", cost: 7000, desc: "+26 к интеллекту, +20% золота.", stats: { intellect: 26 }, bonuses: { gold: 0.20 }, tag: "Системный" },
+      { id: "box-mystery", name: "Загадочная шкатулка", type: "box", category: "system", cost: 4000, desc: "Даёт шанс выбить одну из 5 стихий или усилить уже найденную.", tag: "Системный" },
+      { id: "cons-focus", name: "Фокус-капсула", type: "consumable", category: "system", cost: 560, desc: "+65 XP.", effect: { xp: 65 }, tag: "Системный" },
+      { id: "cons-scroll", name: "Свиток плана", type: "consumable", category: "system", cost: 390, desc: "+1 очко серии дня, если сегодня были квесты.", effect: { streak: 1 }, tag: "Системный" },
+      { id: "cons-kit", name: "Набор восстановления", type: "consumable", category: "system", cost: 980, desc: "+110 XP и +25 золота.", effect: { xp: 110, gold: 25 }, tag: "Системный" },
+      { id: "cons-golden-pass", name: "Золотой пропуск", type: "consumable", category: "system", cost: 2200, desc: "+180 золота сразу.", effect: { gold: 180 }, tag: "Системный" },
+      { id: "cons-memory-ink", name: "Чернила памяти", type: "consumable", category: "system", cost: 680, desc: "+1 запись в дневник автоматически создаёт заметку с бонусом XP.", effect: { diaryAuto: true }, tag: "Системный" },
+      { id: "cons-boss-bait", name: "Приманка босса", type: "consumable", category: "system", cost: 1450, desc: "Наносит 300 урона активному боссу.", effect: { bossDamage: 300 }, tag: "Системный" },
+      { id: "cons-planner-core", name: "Ядро планера", type: "consumable", category: "system", cost: 880, desc: "+90 XP при следующем закрытии дела.", effect: { plannerBoost: 90 }, tag: "Системный" },
+      { id: "cons-sun-token", name: "Жетон рассвета", type: "consumable", category: "system", cost: 1350, desc: "+1 очко навыков.", effect: { skillPoints: 1 }, tag: "Системный" },
+
+      { id: "cons-coffee", name: "Кофе", type: "consumable", category: "real", cost: 120, desc: "+15 XP мгновенно.", effect: { xp: 15 }, tag: "Реальная жизнь" },
+      { id: "cons-energy", name: "Энергетик", type: "consumable", category: "real", cost: 170, desc: "+25 XP мгновенно.", effect: { xp: 25 }, tag: "Реальная жизнь" },
+      { id: "cons-film", name: "Фильм", type: "consumable", category: "real", cost: 420, desc: "Снимает усталость. +40 XP.", effect: { xp: 40 }, tag: "Реальная жизнь" },
+      { id: "cons-fastfood", name: "Фастфуд", type: "consumable", category: "real", cost: 470, desc: "+60 золота немедленно.", effect: { gold: 60 }, tag: "Реальная жизнь" },
+      { id: "cons-taxi", name: "Такси", type: "consumable", category: "real", cost: 620, desc: "+1 запись в истории и +50 XP.", effect: { xp: 50 }, tag: "Реальная жизнь" },
+      { id: "cons-dayoff", name: "Выходной", type: "consumable", category: "real", cost: 1500, desc: "+120 XP и красивый моральный буст.", effect: { xp: 120 }, tag: "Реальная жизнь" },
+      { id: "cons-book", name: "Покупка книги", type: "consumable", category: "real", cost: 830, desc: "+90 XP.", effect: { xp: 90 }, tag: "Реальная жизнь" },
+      { id: "cons-ration", name: "Полевой рацион", type: "consumable", category: "real", cost: 280, desc: "+20 XP и +10 золота.", effect: { xp: 20, gold: 10 }, tag: "Реальная жизнь" },
+      { id: "real-headphones", name: "Новые наушники", type: "consumable", category: "real", cost: 1750, desc: "+130 XP за комфортный фокус.", effect: { xp: 130 }, tag: "Реальная жизнь" },
+      { id: "real-deskmat", name: "Коврик на стол", type: "consumable", category: "real", cost: 920, desc: "+70 XP и +15 золота.", effect: { xp: 70, gold: 15 }, tag: "Реальная жизнь" },
+      { id: "real-vitamin", name: "Витамины", type: "consumable", category: "real", cost: 660, desc: "+55 XP.", effect: { xp: 55 }, tag: "Реальная жизнь" },
+      { id: "real-notebook", name: "Блокнот", type: "consumable", category: "real", cost: 540, desc: "+45 XP и помогает дневнику.", effect: { xp: 45 }, tag: "Реальная жизнь" },
+      { id: "real-pen-set", name: "Набор ручек", type: "consumable", category: "real", cost: 430, desc: "+35 XP.", effect: { xp: 35 }, tag: "Реальная жизнь" },
+      { id: "real-gym-pass", name: "Абонемент в зал", type: "consumable", category: "real", cost: 2800, desc: "+210 XP.", effect: { xp: 210 }, tag: "Реальная жизнь" },
+      { id: "real-protein", name: "Протеин", type: "consumable", category: "real", cost: 1550, desc: "+125 XP.", effect: { xp: 125 }, tag: "Реальная жизнь" },
+      { id: "real-water-bottle", name: "Бутылка для воды", type: "consumable", category: "real", cost: 490, desc: "+30 XP и +1 к серии.", effect: { xp: 30, streak: 1 }, tag: "Реальная жизнь" },
+      { id: "real-lamp", name: "Настольная лампа", type: "consumable", category: "real", cost: 1380, desc: "+100 XP.", effect: { xp: 100 }, tag: "Реальная жизнь" },
+      { id: "real-chair", name: "Эргономичное кресло", type: "consumable", category: "real", cost: 3600, desc: "+240 XP.", effect: { xp: 240 }, tag: "Реальная жизнь" },
+      { id: "real-meal-prep", name: "Заготовка еды на день", type: "consumable", category: "real", cost: 770, desc: "+65 XP и +20 золота.", effect: { xp: 65, gold: 20 }, tag: "Реальная жизнь" },
+      { id: "real-skincare", name: "Уход за собой", type: "consumable", category: "real", cost: 580, desc: "+50 XP.", effect: { xp: 50 }, tag: "Реальная жизнь" },
+      { id: "real-cleaning-kit", name: "Набор для уборки", type: "consumable", category: "real", cost: 610, desc: "+50 XP и +10 золота.", effect: { xp: 50, gold: 10 }, tag: "Реальная жизнь" },
+      { id: "real-course", name: "Мини-курс", type: "consumable", category: "real", cost: 2450, desc: "+190 XP.", effect: { xp: 190 }, tag: "Реальная жизнь" },
+      { id: "real-massage", name: "Массаж", type: "consumable", category: "real", cost: 1900, desc: "+145 XP.", effect: { xp: 145 }, tag: "Реальная жизнь" },
+      { id: "real-date-night", name: "Вечер отдыха", type: "consumable", category: "real", cost: 2100, desc: "+150 XP и +30 золота.", effect: { xp: 150, gold: 30 }, tag: "Реальная жизнь" },
+      { id: "real-smartwatch", name: "Смарт-часы", type: "consumable", category: "real", cost: 4200, desc: "+280 XP.", effect: { xp: 280 }, tag: "Реальная жизнь" },
+      { id: "real-bike-ride", name: "Велопрогулка", type: "consumable", category: "real", cost: 980, desc: "+85 XP.", effect: { xp: 85 }, tag: "Реальная жизнь" },
+      { id: "real-fruit-box", name: "Коробка фруктов", type: "consumable", category: "real", cost: 690, desc: "+60 XP.", effect: { xp: 60 }, tag: "Реальная жизнь" },
+      { id: "real-sleep-mask", name: "Маска для сна", type: "consumable", category: "real", cost: 520, desc: "+40 XP.", effect: { xp: 40 }, tag: "Реальная жизнь" }
+    ];
+
+    const milestoneNames = [
+      "Пепельный Надзиратель", "Ворон Бездонного Кодекса", "Жнец Остывшей Воли", "Проводник Сломанных Дисциплин",
+      "Титан Бессонных Утров", "Королева Холодного Фокуса", "Пастырь Чёрного Потока", "Архонт Второго Дыхания",
+      "Багровый Маршал Привычек", "Немой Судья Сомнений", "Глашатай Стального Спокойствия", "Кователь Предела",
+      "Князь Ледяной Ясности", "Зодчий Запретных Обетов", "Пожиратель Лёгких Побед", "Смотритель Разлома Намерений",
+      "Оракул Безжалостного Режима", "Лорд Полярного Усилия", "Песнь Последнего Темпа", "Палач Комфортной Зоны",
+      "Владыка Тридцати Рубежей", "Ржавый Император Лени", "Шифровальщик Ночи", "Железная Матрона Ритма",
+      "Тронный Охотник за Слабостью", "Безымянный Апекс", "Охранитель Бури Прогресса", "Арбитр Тысячи Повторов",
+      "Часовой Нулевого Оправдания", "Предел Системы"
+    ];
+
+    function createQuestPool() {
+      const base = [
+        "Подъём без откладывания будильника",
+        "30 минут чистой концентрации без отвлечений",
+        "План на день с тремя главными задачами",
+        "Полный стак режима: вода с утра и короткая разминка",
+        "Чтение развивающего материала минимум 20 минут",
+        "Прогулка без телефона 20 минут",
+        "Разбор одного хвоста или отложенного дела",
+        "Запись в дневник по итогам дня",
+        "Уборка рабочего места до идеального состояния",
+        "1 час deep work без соцсетей",
+        "Тренировка осанки и дыхания",
+        "Вечер без бессмысленного скроллинга",
+        "Подготовка вещей и плана на завтра",
+        "Фиксация расходов за день",
+        "Разгрузка входящих и уведомлений",
+        "15 минут повторения полезного навыка",
+        "Контроль питания в течение дня",
+        "Осознанная пауза и настройка приоритетов",
+        "Завершить самое неприятное дело первым",
+        "Собрать все мелкие хвосты в одну сессию",
+        "Сделать 10 минут растяжки",
+        "Завести таймер и поработать спринтами",
+        "Записать одну сильную мысль дня",
+        "Выполнить обещание самому себе",
+        "15 минут без жалоб и оправданий",
+        "Отчистить рабочий стол на устройстве",
+        "Мини-ревизия привычек",
+        "Перепроверка целей недели",
+        "Подготовка здорового перекуса",
+        "Закрыть день без просроченных дел"
+      ];
+
+      const strength = [
+        "50 приседаний", "30 отжиманий", "планка 2 минуты", "рывковая зарядка 15 минут", "10 подтягиваний",
+        "кардио 20 минут", "60 выпадов", "бой с тенью 10 минут", "100 прыжков", "10000 шагов",
+        "силовая тренировка на ноги", "силовая тренировка на спину", "силовая тренировка на грудь", "кор 15 минут",
+        "берпи 25 повторений", "мобилизация суставов", "упражнения на плечи", "растяжка после тренировки",
+        "пеший подъем по лестнице", "быстрый шаг 30 минут", "велотренировка 25 минут", "скакалка 7 минут",
+        "пресс 80 повторений", "ягодичный мост 40 повторений", "стойка у стены 2 минуты", "суперсет на всё тело",
+        "техника приседа и контроля корпуса", "рывковая прогулка с рюкзаком", "силовая выносливость кругами", "финишный спринт 10 минут"
+      ];
+
+      const intellect = [
+        "прочитать 25 страниц", "решить 3 задачи", "разобрать новую тему", "100 строк осмысленного кода", "30 минут английского",
+        "конспект по статье", "анализ архитектуры проекта", "ревью собственного кода", "изучение API", "шахматная партия",
+        "10 карточек на память", "таблица личных финансов", "просмотр обучающего видео с заметками", "мозговой штурм идеи",
+        "разобрать сложную ошибку", "15 минут слепой печати", "прочитать документацию", "раскладка знаний в карту",
+        "написать краткое эссе", "планирование недели", "разобрать чужой проект", "решить логическую задачу",
+        "повторить старый материал", "навести порядок в заметках", "создать чек-лист для работы", "выписать 20 новых слов",
+        "настроить рабочий процесс", "мини-исследование темы", "сделать полезный шаблон", "погружение в глубокую тему 45 минут"
+      ];
+
+      const will = [
+        "холодный душ", "день без сахара", "час без телефона", "не жаловаться весь день", "медитация 15 минут",
+        "уборка сложного участка", "подъём строго по первому сигналу", "прогулка без музыки", "молчание 20 минут",
+        "держать слово по обещанию", "контроль осанки 30 минут", "отказ от перекуса", "вести чистую речь", "без прокрастинации 1 час",
+        "разобрать неприятный разговор", "убрать все мелкие долги", "не смотреть ленту до вечера", "глубокое дыхание и пауза",
+        "разбор шкафа или ящика", "ранний отбой", "не использовать лифт", "вынести мусор сразу", "провести день по режиму",
+        "не срываться на раздражители", "финансовая дисциплина", "сдержать импульсивную покупку", "довести рутину до конца",
+        "выполнить тяжёлое дело без торга", "строгий тайм-блок 45 минут", "завершить день без оправданий"
+      ];
+
+      const build = (list, branch, baseXp) =>
+        list.map((title, index) => ({
+          id: `${branch}-${index + 1}`,
+          title: `${QUEST_BRANCHES.find(item => item.id === branch).prefix}: ${title}`,
+          branch,
+          suggestedXp: baseXp + (index % 6) * 10 + Math.floor(index / 6) * 5
+        }));
+
+      return {
+        base: build(base, "base", 55),
+        strength: build(strength, "strength", 65),
+        intellect: build(intellect, "intellect", 65),
+        will: build(will, "will", 65)
+      };
+    }
+
+    function createGateBosses() {
+      const first = ["Пепельный", "Ледяной", "Грозовой", "Теневой", "Звёздный", "Костяной", "Стальной", "Безмолвный", "Рунический", "Алый", "Солнечный", "Обсидиановый", "Пустотный", "Полярный", "Древний"];
+      const second = ["Палач", "Смотритель", "Гигант", "Архон", "Колосс", "Левиафан", "Князь", "Хранитель", "Тиран", "Пастырь", "Магистр", "Оракул", "Охотник", "Вестник", "Каратель"];
+      const bosses = {};
+      GATE_RANKS.forEach((rank, rankIndex) => {
+        bosses[rank.id] = Array.from({ length: 15 }, (_, index) => {
+          const name = `${first[(rankIndex + index) % first.length]} ${second[(index * 2 + rankIndex) % second.length]} ${rank.id}-${index + 1}`;
+          const hp = Math.round(rank.bossHp * (1 + index * 0.11));
+          return {
+            id: `${rank.id}-${index + 1}`,
+            name,
+            rank: rank.id,
+            hp,
+            rewardXp: 180 + rankIndex * 55 + index * 10,
+            rewardScale: rank.rewardScale
+          };
+        });
       });
+      return bosses;
     }
 
-    function showImportModal() {
-      document.getElementById("importModal").style.display = "flex";
+    const QUESTS = createQuestPool();
+    const GATE_BOSSES = createGateBosses();
+
+    const PROGRAMS = [
+      {
+        id: "income100k",
+        title: "100 000 рублей в месяц",
+        tag: "Деньги / карьера",
+        duration: "30 дней",
+        goal: "Собрать управляемую систему дохода: оффер, продажи, учёт, тест гипотез и денежная дисциплина.",
+        pitch: "Программа не про магию, а про внятный маршрут к деньгам: считать, предлагать, тестировать, улучшать.",
+        brief: "Основа взята из практики финансового планирования: сначала понять, где ты сейчас, затем поставить цель, рассчитать ежемесячный темп и автоматизировать полезные действия. Я расширил это до игрового режима роста дохода.",
+        guide: [
+          "Сначала определи точку А: сколько сейчас приходит денег, какие есть источники и где теряется маржа.",
+          "Затем собирай оффер: что ты продаёшь, кому, за сколько и почему именно это должно купить.",
+          "Третья часть — ежедневные касания: продажи, отклики, переписка, тест новых связок и добивание слабых мест."
+        ],
+        milestones: [
+          "Неделя 1: аудит расходов, доходов и сбор базового оффера.",
+          "Неделя 2: ежедневные отклики, звонки, тексты или созвоны по офферу.",
+          "Неделя 3: улучшение упаковки и повышение среднего чека.",
+          "Неделя 4: автоматизация накоплений, повторяемых действий и отсев слабых гипотез."
+        ],
+        dailyQuests: [
+          { id: "income-track", title: "Записать все доходы и расходы за день", branch: "intellect", suggestedXp: 70, help: "Без учёта нет рычага. Смотри на деньги трезво, а не по ощущениям." },
+          { id: "income-offer", title: "Улучшить один кусок оффера или портфолио", branch: "intellect", suggestedXp: 85, help: "Один экран, один абзац, один кейс — но лучше, чем вчера." },
+          { id: "income-outreach", title: "Сделать 3-5 касаний в сторону клиента или денег", branch: "will", suggestedXp: 95, help: "Отклики, переписка, пост, звонок, предложение, follow-up." },
+          { id: "income-skill", title: "45 минут качать продающий навык", branch: "intellect", suggestedXp: 90, help: "Навык может быть любым: продажи, упаковка, переговоры, аналитика, монтаж, дизайн, код." }
+        ],
+        references: [
+          { label: "CFPB: Set a goal, make a plan, and save automatically", url: "https://www.consumerfinance.gov/about-us/blog/set-a-goal-make-a-plan-and-save-automatically/" },
+          { label: "CFPB: Assess your spending", url: "https://www.consumerfinance.gov/owning-a-home/prepare/assess-your-spending/" }
+        ]
+      },
+      {
+        id: "savings-buffer",
+        title: "Подушка безопасности",
+        tag: "Финансы",
+        duration: "45 дней",
+        goal: "Собрать личную финансовую опору и убрать ощущение постоянного кассового пожара.",
+        pitch: "Эта программа про спокойствие: меньше хаоса, больше контроля и заранее подготовленных денег.",
+        brief: "Я опирался на материалы CFPB про цель, план, автоматические переводы и привычку откладывать заранее, а не из остатков.",
+        guide: [
+          "Определи размер первой подушки: например, 30 000, 50 000 или сумма ежемесячных базовых расходов.",
+          "Убери туман: у тебя должен быть виден текущий остаток, еженедельный темп и автоматический шаг накопления.",
+          "Каждый день ты или сохраняешь деньги, или уменьшаешь утечки, или усиливаешь навык зарабатывать."
+        ],
+        milestones: [
+          "Собрать реальный список расходов за месяц.",
+          "Выделить обязательные и лишние траты.",
+          "Настроить автоматический перевод или ручной ритуал накопления.",
+          "Прожить неделю без хаотичных импульсных расходов."
+        ],
+        dailyQuests: [
+          { id: "buffer-log", title: "Заполнить трекер расходов", branch: "intellect", suggestedXp: 65, help: "Даже 5 минут учёта бьют лучше, чем жизнь наугад." },
+          { id: "buffer-save", title: "Отложить любую сумму в резерв", branch: "will", suggestedXp: 75, help: "Важно не количество, а закрепление действия." },
+          { id: "buffer-cut", title: "Найти и убрать одну лишнюю трату", branch: "intellect", suggestedXp: 80, help: "Одна микро-утечка в день уже меняет месяц." },
+          { id: "buffer-income", title: "Сделать одно действие на рост дохода", branch: "base", suggestedXp: 85, help: "Подушка строится не только экономией, но и усилением потока денег." }
+        ],
+        references: [
+          { label: "CFPB: Set a goal and start a savings habit", url: "https://www.consumerfinance.gov/about-us/blog/set-a-goal-and-start-a-savings-habit/" },
+          { label: "CFPB: How to save for emergencies and the future", url: "https://www.consumerfinance.gov/about-us/blog/how-save-emergencies-and-future/" }
+        ]
+      },
+      {
+        id: "deepwork",
+        title: "Deep Work Engine",
+        tag: "Фокус / продуктивность",
+        duration: "30 дней",
+        goal: "Собрать режим глубокой работы, в котором ты реально закрываешь большие куски сложных задач.",
+        pitch: "Не суета, а тяжёлый осмысленный выпуск результата.",
+        brief: "Программа собрана как игровая дисциплина фокуса: меньше переключений, больше заранее выбранных выходов и заметного конечного результата.",
+        guide: [
+          "Каждый день у тебя есть один главный выход: документ, код, глава, макет, таблица, решение.",
+          "Сессия глубокой работы начинается только после короткой подготовки: цель, таймер, закрытые отвлечения, нужные материалы.",
+          "Главный вопрос — не сколько времени ты сидел, а что реально стало готово."
+        ],
+        milestones: [
+          "Первые 7 дней: стабилизировать хотя бы один глубокий блок в сутки.",
+          "Дальше: увеличивать плотность и сокращать вход в состояние.",
+          "Финал: выйти на устойчивый ритм без постоянного самоторга."
+        ],
+        dailyQuests: [
+          { id: "deep-plan", title: "Выбрать один главный результат дня", branch: "intellect", suggestedXp: 70, help: "Результат должен быть измеримым, а не абстрактным." },
+          { id: "deep-block", title: "Провести 60-90 минут deep work", branch: "will", suggestedXp: 100, help: "Без ленты, без мессенджеров, без параллельных вкладок." },
+          { id: "deep-clean", title: "Очистить рабочую среду перед стартом", branch: "base", suggestedXp: 65, help: "Окно, стол, вкладки, заметки — всё должно работать на задачу." },
+          { id: "deep-review", title: "Сделать вечерний разбор результата", branch: "intellect", suggestedXp: 75, help: "Что сработало, где просел, что улучшить завтра." }
+        ],
+        references: []
+      },
+      {
+        id: "study-mastery",
+        title: "Учёба без зубрёжки",
+        tag: "Обучение",
+        duration: "45 дней",
+        goal: "Научиться учиться быстрее: вспоминать, чередовать, распределять повторения и не умирать от хаоса.",
+        pitch: "Программа для тех, кто хочет не просто сидеть над материалом, а реально его удерживать.",
+        brief: "Я опёрся на Cornell Learning Strategies Center: retrieval practice, interleaving и spaced practice. Это значит меньше пассивного чтения и больше активного вспоминания и чередования.",
+        guide: [
+          "Не перечитывай бесконечно. Вытаскивай знания из памяти — именно так мозг учится держать материал.",
+          "Не залипай в один блок слишком долго. Чередование тем помогает удерживать качество.",
+          "Распределённая практика всегда сильнее ночного марафона в последний момент."
+        ],
+        milestones: [
+          "Неделя 1: перестроить формат занятий.",
+          "Неделя 2: закрепить blank page testing и интервальные повторения.",
+          "Неделя 3+: строить собственные циклы учёбы под реальные цели."
+        ],
+        dailyQuests: [
+          { id: "study-recall", title: "Сделать сессию активного вспоминания без подсказок", branch: "intellect", suggestedXp: 90, help: "Лист, доска, заметка — выпиши всё, что помнишь по теме." },
+          { id: "study-mix", title: "Смешать 2-3 темы в одной тренировке", branch: "intellect", suggestedXp: 75, help: "Это и есть interleaving: чередуй блоки, а не топчись на одном." },
+          { id: "study-repeat", title: "Вернуться к старому материалу по плану", branch: "will", suggestedXp: 80, help: "Повторение по расписанию сильнее, чем хаотичное перечитывание." },
+          { id: "study-fuel", title: "Подготовить нормальную среду для учёбы", branch: "base", suggestedXp: 60, help: "Вода, еда, сон, чистый стол и ясная цель — это тоже часть результата." }
+        ],
+        references: [
+          { label: "Cornell: Effective Study Strategies", url: "https://lsc.cornell.edu/how-to-study/studying-for-and-taking-exams/effective-study-strategies/" }
+        ]
+      },
+      {
+        id: "speech-forge",
+        title: "Речь и влияние",
+        tag: "Коммуникация",
+        duration: "30 дней",
+        goal: "Сделать речь увереннее, понятнее и сильнее для выступлений, переговоров и обычного общения.",
+        pitch: "Это кузница голоса, структуры и уверенности.",
+        brief: "Программа вдохновлена подходом Toastmasters: готовиться, репетировать, использовать тело, говорить регулярно и строить уверенность через практику.",
+        guide: [
+          "Твоя речь должна быть живой, а не бумажной. Готовь структуру, но говори человечески.",
+          "Уверенность приходит не от вдохновения, а от повторов и видеоразбора.",
+          "Тренируй не только текст, но и темп, паузы, взгляд, жесты и подачу."
+        ],
+        milestones: [
+          "Собрать базовый шаблон короткой речи.",
+          "Научиться проговаривать мысль без воды за 60-90 секунд.",
+          "Записать и разобрать хотя бы 5 выступлений или монологов."
+        ],
+        dailyQuests: [
+          { id: "speech-structure", title: "Собрать микро-выступление на 1-2 минуты", branch: "intellect", suggestedXp: 75, help: "Тезис, пример, вывод — не усложняй." },
+          { id: "speech-live", title: "Проговорить речь вслух и записать себя", branch: "will", suggestedXp: 85, help: "Без записи мозг часто врёт, что всё уже хорошо." },
+          { id: "speech-body", title: "Отработать жестикуляцию, взгляд и паузы", branch: "base", suggestedXp: 70, help: "Тело — это часть сообщения, а не декорация." },
+          { id: "speech-practice", title: "Одна живая коммуникационная ситуация без избегания", branch: "will", suggestedXp: 90, help: "Созвон, голосовое, вопрос на встрече, мини-презентация, знакомство." }
+        ],
+        references: [
+          { label: "Toastmasters: Public Speaking Tips", url: "https://www.toastmasters.org/en-us/resources/public-speaking-tips" }
+        ]
+      },
+      {
+        id: "sleep-reset",
+        title: "Сон как бафф",
+        tag: "Восстановление",
+        duration: "21 день",
+        goal: "Починить режим сна так, чтобы он реально усиливал энергию, фокус и настроение.",
+        pitch: "Не романтизируем недосып. Здесь сон — это легендарный бафф персонажа.",
+        brief: "CDC рекомендует взрослым обычно 7+ часов сна и простые привычки: одинаковое время отбоя и подъёма, прохладная тихая спальня, отключение экранов хотя бы за 30 минут до сна.",
+        guide: [
+          "Главная цель — стабилизировать ритм, а не просто лечь пораньше один раз.",
+          "Сон усиливает внимание, память и восстановление, поэтому это не побочная механика, а центральная.",
+          "Если ты постоянно рубишься в экран до ночи, утренний фокус почти всегда будет проседать."
+        ],
+        milestones: [
+          "7 дней подряд со стабильным подъёмом.",
+          "Экранный детокс перед сном.",
+          "Режим, в котором утром не надо собирать себя по кускам."
+        ],
+        dailyQuests: [
+          { id: "sleep-schedule", title: "Лечь и встать по выбранному режиму", branch: "will", suggestedXp: 85, help: "Одинаковое время — ядро программы." },
+          { id: "sleep-screen", title: "Убрать экран минимум за 30 минут до сна", branch: "will", suggestedXp: 70, help: "Это прямой перенос сильной рекомендации CDC." },
+          { id: "sleep-room", title: "Подготовить комнату ко сну", branch: "base", suggestedXp: 60, help: "Темнота, тишина, прохлада, убранный световой шум." },
+          { id: "sleep-morning", title: "Получить утренний свет и немного движения", branch: "base", suggestedXp: 65, help: "Даже короткая прогулка помогает удерживать режим." }
+        ],
+        references: [
+          { label: "CDC: About Sleep", url: "https://www.cdc.gov/sleep/about/index.html" }
+        ]
+      },
+      {
+        id: "strong-body",
+        title: "Сильное тело",
+        tag: "Физика",
+        duration: "60 дней",
+        goal: "Собрать тело, которое не разваливается: базовая сила, выносливость и дисциплина движения.",
+        pitch: "Не случайные тренировки, а системная прокачка тела как боевой платформы.",
+        brief: "WHO рекомендует взрослым 150-300 минут умеренной активности в неделю и силовые нагрузки минимум 2 раза в неделю. Я превратил это в игровой тренировочный цикл.",
+        guide: [
+          "Тебе не нужен идеальный старт. Нужен повторяемый план, который держится неделями.",
+          "Сила, кардио и восстановление работают вместе, а не вместо друг друга.",
+          "Программа хороша тем, что не требует героизма каждый день — требует регулярности."
+        ],
+        milestones: [
+          "Войти в недельный объём движения.",
+          "Стабилизировать две силовые сессии.",
+          "Снять ощущение тяжёлого тела и вялости."
+        ],
+        dailyQuests: [
+          { id: "body-move", title: "Закрыть основной блок движения дня", branch: "strength", suggestedXp: 95, help: "Силовая, круг, ходьба, кардио — по плану дня." },
+          { id: "body-steps", title: "Добрать базовую активность и шаги", branch: "base", suggestedXp: 70, help: "Даже вне тренировки тело должно жить." },
+          { id: "body-mobility", title: "Сделать мобилизацию или растяжку", branch: "will", suggestedXp: 65, help: "Это страховка от сломанного ритма и скованности." },
+          { id: "body-recovery", title: "Поддержать восстановление: вода, питание, сон", branch: "base", suggestedXp: 75, help: "Без восстановления прогресс быстро становится иллюзией." }
+        ],
+        references: [
+          { label: "WHO: Physical activity", url: "https://www.who.int/news-room/fact-sheets/detail/physical-activity" }
+        ]
+      },
+      {
+        id: "runner5k",
+        title: "5 км без страданий",
+        tag: "Кардио",
+        duration: "42 дня",
+        goal: "Добежать до устойчивых 5 км и почувствовать, что кардио — это сила, а не наказание.",
+        pitch: "Лёгкий, но упорный маршрут в выносливость.",
+        brief: "Программа построена вокруг идеи, что любая активность лучше, чем никакой, а объём должен расти постепенно и без самоубийственных скачков.",
+        guide: [
+          "Главное — не скорость, а устойчивость и отсутствие откатов.",
+          "Комбинируй интервалы, лёгкий бег, ходьбу и восстановление.",
+          "Если тяжело — снижай интенсивность, но не теряй ритм."
+        ],
+        milestones: [
+          "Собрать привычку выходить на дорожку или улицу регулярно.",
+          "Перестать умирать на старте.",
+          "Закрыть непрерывные 5 км или уверенный интервал на эту дистанцию."
+        ],
+        dailyQuests: [
+          { id: "run-main", title: "Закрыть беговой или интервальный блок дня", branch: "strength", suggestedXp: 90, help: "Даже 15-20 минут по плану лучше, чем пропуск." },
+          { id: "run-warm", title: "Сделать нормальную разминку и заминку", branch: "base", suggestedXp: 60, help: "Это повышает качество и снижает риск сорваться." },
+          { id: "run-log", title: "Записать дистанцию, время и самочувствие", branch: "intellect", suggestedXp: 65, help: "Трекер нужен, чтобы видеть реальный прогресс." },
+          { id: "run-recovery", title: "Поддержать ноги: ходьба, вода, сон", branch: "will", suggestedXp: 65, help: "Кардио растёт через восстановление, а не только через боль." }
+        ],
+        references: [
+          { label: "WHO: Physical activity", url: "https://www.who.int/news-room/fact-sheets/detail/physical-activity" }
+        ]
+      },
+      {
+        id: "digital-reset",
+        title: "Цифровой детокс",
+        tag: "Воля / внимание",
+        duration: "21 день",
+        goal: "Вернуть внимание себе, а не бесконечной ленте и случайным уведомлениям.",
+        pitch: "Снимаем дебафф рассеянности и возвращаем контроль над вниманием.",
+        brief: "Я использовал принципы сна, самоухода и управления экранной средой: меньше шума, меньше автоматических захватов внимания, больше осознанного выбора.",
+        guide: [
+          "Задача не в том, чтобы стать монахом, а в том, чтобы перестать жить как добыча алгоритма.",
+          "Самое сильное оружие — не сила воли, а изменение среды: ленты, уведомления, первый экран, временные окна.",
+          "Каждый день нужен маленький возврат контроля."
+        ],
+        milestones: [
+          "Отключить ненужные уведомления и шум.",
+          "Появиться в реальности без телефона хотя бы на короткие отрезки.",
+          "Вернуть возможность читать, думать и делать одно дело."
+        ],
+        dailyQuests: [
+          { id: "digital-window", title: "Провести один блок без телефона и ленты", branch: "will", suggestedXp: 85, help: "Начни с 30-45 минут, потом расширяй." },
+          { id: "digital-clean", title: "Убрать один триггер цифрового шума", branch: "intellect", suggestedXp: 70, help: "Иконки, уведомления, вкладки, подписки, бесконечные чаты." },
+          { id: "digital-offline", title: "Сделать офлайн-активность вместо экрана", branch: "base", suggestedXp: 65, help: "Прогулка, уборка, бумажная книга, заметки, растяжка." },
+          { id: "digital-review", title: "Зафиксировать, на что реально ушло внимание", branch: "intellect", suggestedXp: 70, help: "Без честного аудита внимание не вернуть." }
+        ],
+        references: [
+          { label: "CDC: About Sleep", url: "https://www.cdc.gov/sleep/about/index.html" },
+          { label: "WHO: Self-care for health and well-being", url: "https://www.who.int/news-room/fact-sheets/detail/self-care-health-interventions" }
+        ]
+      },
+      {
+        id: "english-b1",
+        title: "Английский в ритме",
+        tag: "Язык",
+        duration: "60 дней",
+        goal: "Поднять английский через ежедневное касание слов, слуха, речи и письма.",
+        pitch: "Не ждать мотивацию, а входить в язык каждый день с разных сторон.",
+        brief: "Программа вдохновлена идеей распределённой практики: регулярный короткий контакт с материалом почти всегда устойчивее редких длинных сессий.",
+        guide: [
+          "Тебе нужен микс: слова, аудирование, активное воспроизведение, письмо и речь.",
+          "Не копи идеальный день — собирай рабочие 20-40 минут.",
+          "Язык перестаёт быть абстракцией, когда ты начинаешь регулярно что-то говорить и писать."
+        ],
+        milestones: [
+          "Накопить понятный словарь по своим темам.",
+          "Снять страх ошибки при речи.",
+          "Перейти из режима пассивного потребления в активное использование."
+        ],
+        dailyQuests: [
+          { id: "eng-vocab", title: "Выучить и повторить набор слов", branch: "intellect", suggestedXp: 70, help: "Небольшой блок, но с примерами и повторением." },
+          { id: "eng-listen", title: "Послушать 10-20 минут английской речи", branch: "intellect", suggestedXp: 75, help: "Не просто фоном, а с попыткой вытащить смысл." },
+          { id: "eng-speak", title: "Сделать голосовую или устную практику", branch: "will", suggestedXp: 85, help: "Даже монолог самому себе уже считается." },
+          { id: "eng-write", title: "Написать маленький текст на английском", branch: "intellect", suggestedXp: 80, help: "5-10 осмысленных предложений лучше, чем ноль." }
+        ],
+        references: [
+          { label: "Cornell: Effective Study Strategies", url: "https://lsc.cornell.edu/how-to-study/studying-for-and-taking-exams/effective-study-strategies/" }
+        ]
+      },
+      {
+        id: "creator-engine",
+        title: "Контент-машина",
+        tag: "Творчество / дисциплина",
+        duration: "30 дней",
+        goal: "Запустить постоянный поток публикаций, идей и рабочих материалов, а не жить в режиме вечной подготовки.",
+        pitch: "Создатель растёт от регулярного выпуска, а не от бесконечного шлифования.",
+        brief: "Это программа про производство: идеи, тезисы, драфты, публикации, разбор отклика и следующий цикл.",
+        guide: [
+          "Твоя сила здесь — выпуск и повторяемость.",
+          "Нельзя ждать идеального настроения. Нужна маленькая, но честная конвейерная система.",
+          "Каждый день ты должен или создавать материал, или усиливать механику выпуска."
+        ],
+        milestones: [
+          "Собрать банк идей.",
+          "Сделать 5-10 опубликованных единиц контента.",
+          "Понять, какой формат даёт тебе энергию и результат."
+        ],
+        dailyQuests: [
+          { id: "creator-idea", title: "Собрать 3-5 новых идей или заходов", branch: "intellect", suggestedXp: 65, help: "Идеи — это топливо конвейера." },
+          { id: "creator-draft", title: "Сделать драфт или кусок публикации", branch: "intellect", suggestedXp: 85, help: "Черновик, сценарий, каркас, эскиз, тезисы." },
+          { id: "creator-ship", title: "Опубликовать или отдать миру один результат", branch: "will", suggestedXp: 95, help: "Пост, видео, кейс, тред, заметка, карточка." },
+          { id: "creator-review", title: "Разобрать, что зашло и что улучшить", branch: "base", suggestedXp: 70, help: "Прогресс любит обратную связь." }
+        ],
+        references: []
+      },
+      {
+        id: "portfolio-career",
+        title: "Карьерный апгрейд",
+        tag: "Работа / рост",
+        duration: "45 дней",
+        goal: "Обновить карьерный профиль, собрать кейсы и выйти на следующий уровень рынка.",
+        pitch: "Из режима «я что-то умею» в режим «я упакован и заметен».",
+        brief: "Это программа для тех, кто хочет двигаться по карьере быстрее: оформить результаты, усилить упаковку, улучшить переговорную позицию и сделать больше рыночных попыток.",
+        guide: [
+          "Рынок видит не только навыки, но и упаковку этих навыков.",
+          "Один сильный кейс или понятное резюме иногда полезнее десяти недель внутреннего сомнения.",
+          "Двигайся циклами: улучшение профиля, отклики, обратная связь, коррекция."
+        ],
+        milestones: [
+          "Привести в порядок резюме, портфолио и профиль.",
+          "Собрать 2-3 кейса с понятным результатом.",
+          "Начать стабильно делать рыночные попытки."
+        ],
+        dailyQuests: [
+          { id: "career-case", title: "Улучшить кейс, резюме или профиль", branch: "intellect", suggestedXp: 80, help: "Даже один экран или один блок текста уже важен." },
+          { id: "career-proof", title: "Собрать измеримый результат из прошлого опыта", branch: "intellect", suggestedXp: 75, help: "Цифры, эффект, сроки, влияние — всё это усиливает ценность." },
+          { id: "career-outreach", title: "Сделать карьерное касание рынку", branch: "will", suggestedXp: 90, help: "Отклик, сообщение, интервью, follow-up, запрос обратной связи." },
+          { id: "career-skill", title: "Прокачать один рабочий навык 30-45 минут", branch: "base", suggestedXp: 85, help: "Твоя цена растёт от реального навыка, а не только от упаковки." }
+        ],
+        references: []
+      },
+      {
+        id: "discipline-reboot",
+        title: "Железная дисциплина",
+        tag: "Режим",
+        duration: "21 день",
+        goal: "Собрать режим, в котором ты не торгуешься с собой по каждому действию.",
+        pitch: "Никакой лишней драмы. Просто устойчивый личный устав.",
+        brief: "Это игровой режим жёсткого ритма: подъем, старт, неприятное дело первым, контроль дня и честный разбор.",
+        guide: [
+          "Дисциплина — это не настроение, а серия заранее принятых решений.",
+          "Чем меньше внутренних переговоров, тем больше чистой энергии остаётся на жизнь.",
+          "Программа особенно хороша после периода хаоса и потерь ритма."
+        ],
+        milestones: [
+          "7 дней без развала утра.",
+          "Старт дня с первого важного действия, а не с хаоса.",
+          "Вечерний разбор без самообмана."
+        ],
+        dailyQuests: [
+          { id: "discipline-rise", title: "Подъём по первому сигналу", branch: "will", suggestedXp: 80, help: "Без дополнительных кругов переговоров с кроватью." },
+          { id: "discipline-first", title: "Сделать главное неприятное дело первым", branch: "base", suggestedXp: 95, help: "Это ломает старую механику избегания." },
+          { id: "discipline-order", title: "Поддержать порядок в среде и вещах", branch: "will", suggestedXp: 65, help: "Внешний порядок помогает держать внутренний." },
+          { id: "discipline-review", title: "Вечерний разбор дня без оправданий", branch: "intellect", suggestedXp: 75, help: "Что обещал, что сделал, что мешало, что меняешь завтра." }
+        ],
+        references: []
+      },
+      {
+        id: "calm-mind",
+        title: "Спокойная нервная система",
+        tag: "Ментальное здоровье",
+        duration: "30 дней",
+        goal: "Снизить перегруз и собрать рабочее состояние, в котором ты не живёшь на постоянном внутреннем пожаре.",
+        pitch: "Не только про расслабление. Про устойчивость, ясность и самоуправление.",
+        brief: "WHO описывает self-care как набор практик, привычек и образа жизни, поддерживающих здоровье и благополучие. Эту идею я превратил в программу личной устойчивости.",
+        guide: [
+          "Тебе не нужно становиться идеально спокойным. Нужно перестать всё время жить на перегрузе.",
+          "Маленькие ежедневные действия работают лучше, чем редкие героические попытки «исправить жизнь» за один вечер.",
+          "Режим заботы о себе не отменяет работу — он позволяет её выдерживать."
+        ],
+        milestones: [
+          "Собрать 10-15 минут ежедневного восстановления.",
+          "Уменьшить шум в голове и теле.",
+          "Вернуть ощущение управляемости."
+        ],
+        dailyQuests: [
+          { id: "calm-breath", title: "Сделать блок дыхания, тишины или медитации", branch: "will", suggestedXp: 70, help: "Даже 8-12 минут уже дают эффект, если делать честно." },
+          { id: "calm-walk", title: "Прогуляться без цифрового шума", branch: "base", suggestedXp: 65, help: "Пусть мозг хоть немного выйдет из бесконечного входящего потока." },
+          { id: "calm-note", title: "Выгрузить мысли письменно", branch: "intellect", suggestedXp: 70, help: "Список тревог, план, хаос в голове — всё на бумагу." },
+          { id: "calm-care", title: "Сделать одно действие чистого self-care", branch: "base", suggestedXp: 60, help: "Сон, вода, еда, порядок, гигиена, отдых, границы — всё считается." }
+        ],
+        references: [
+          { label: "WHO: Self-care for health and well-being", url: "https://www.who.int/news-room/fact-sheets/detail/self-care-health-interventions" },
+          { label: "WHO: Mental health", url: "https://www.who.int/health-topics/mental-health" }
+        ]
+      },
+      {
+        id: "social-capital",
+        title: "Социальный капитал",
+        tag: "Связи / влияние",
+        duration: "30 дней",
+        goal: "Укрепить связи, уверенность в общении и навык строить тёплые полезные контакты.",
+        pitch: "Не замыкаться в одиночном режиме, а делать связи реальным ресурсом.",
+        brief: "Программа про мягкую силу: внимательность, контакт, инициативу и умение говорить с людьми без бегства и напряжённой маски.",
+        guide: [
+          "Связи не строятся рывком. Они растут из постоянных маленьких действий.",
+          "Помощь, интерес и тёплый follow-up часто сильнее, чем попытка срочно понравиться.",
+          "Тренируй навык контакта как отдельную мышцу."
+        ],
+        milestones: [
+          "Регулярно писать людям первым.",
+          "Сделать привычным follow-up после общения.",
+          "Поймать ощущение, что общение — это не угроза, а инструмент и удовольствие."
+        ],
+        dailyQuests: [
+          { id: "social-first", title: "Написать одному человеку первым", branch: "will", suggestedXp: 70, help: "Без повода тоже можно. Главное — реальный контакт." },
+          { id: "social-help", title: "Сделать одно полезное действие для связи", branch: "base", suggestedXp: 75, help: "Ссылка, идея, помощь, совет, знакомство, поддержка." },
+          { id: "social-observe", title: "Потренировать качество диалога", branch: "intellect", suggestedXp: 65, help: "Слушай, задавай вопросы, держи внимание, не убегай в себя." },
+          { id: "social-courage", title: "Сделать маленький социальный выход из зоны комфорта", branch: "will", suggestedXp: 85, help: "Голосовое, знакомство, короткий звонок, вопрос на встрече." }
+        ],
+        references: []
+      },
+      {
+        id: "selfcare-core",
+        title: "Система самоухода",
+        tag: "База жизни",
+        duration: "28 дней",
+        goal: "Поставить на рельсы базовые вещи, которые делают жизнь и работу устойчивыми.",
+        pitch: "Если база развалена, всё остальное держится на нервах.",
+        brief: "Программа построена вокруг идеи WHO о self-care как наборе практик, привычек и образа жизни, поддерживающих здоровье и благополучие.",
+        guide: [
+          "Здесь нет великого геройства. Здесь про нормальную ежедневную базу.",
+          "Гигиена, движение, вода, еда, порядок, границы и отдых — это не слабость, а фундамент.",
+          "Когда база собрана, все остальные программы идут легче."
+        ],
+        milestones: [
+          "Стабилизировать базовые ритуалы утра и вечера.",
+          "Убрать провалы по воде, еде и порядку.",
+          "Перестать жить с ощущением внутренней бытовой аварии."
+        ],
+        dailyQuests: [
+          { id: "care-water", title: "Закрыть водный и пищевой минимум дня", branch: "base", suggestedXp: 65, help: "Нормальная еда и вода — это реальный бафф, а не скучная обязанность." },
+          { id: "care-order", title: "Сделать одну сессию наведения порядка", branch: "will", suggestedXp: 60, help: "Комната, стол, сумка, вещи, документы — что угодно." },
+          { id: "care-body", title: "Дать телу движение и воздух", branch: "strength", suggestedXp: 75, help: "Даже короткая ходьба или разминка уже считается." },
+          { id: "care-boundary", title: "Сделать одно действие в защиту себя", branch: "intellect", suggestedXp: 70, help: "Сказать нет, закрыть лишнее, освободить время, не влезть в хаос." }
+        ],
+        references: [
+          { label: "WHO: Self-care for health and well-being", url: "https://www.who.int/news-room/fact-sheets/detail/self-care-health-interventions" }
+        ]
+      },
+      {
+        id: "brain-body-sync",
+        title: "Мозг + тело",
+        tag: "Баланс",
+        duration: "30 дней",
+        goal: "Собрать режим, где интеллект, движение и восстановление усиливают друг друга, а не конкурируют.",
+        pitch: "Высокая производительность без развала здоровья.",
+        brief: "Программа родилась на пересечении рекомендаций по активности, сну и обучению: мозг учится лучше, когда тело не загнано и не обезвожено.",
+        guide: [
+          "Не дели жизнь на «работу» и «здоровье» так, будто они враги.",
+          "Когда ты спишь, двигаешься и ешь вменяемо, умственная отдача становится выше.",
+          "Баланс здесь не мягкость, а умная сборка ресурса."
+        ],
+        milestones: [
+          "Собрать дневной контур: работа, движение, восстановление.",
+          "Перестать проваливаться в состояние «голова есть, тела нет».",
+          "Удержать ритм хотя бы 2-3 недели подряд."
+        ],
+        dailyQuests: [
+          { id: "sync-study", title: "Сделать один сильный интеллектуальный блок", branch: "intellect", suggestedXp: 85, help: "Глубокое чтение, код, учёба, анализ — не мелкая суета." },
+          { id: "sync-move", title: "Дать телу 20-40 минут живого движения", branch: "strength", suggestedXp: 80, help: "Ходьба, тренировка, интервалы, растяжка — по ситуации." },
+          { id: "sync-recover", title: "Закрыть один восстановительный ритуал", branch: "will", suggestedXp: 65, help: "Сон, вода, еда, тишина, отдых без экрана." },
+          { id: "sync-review", title: "Проверить баланс дня и скорректировать завтра", branch: "base", suggestedXp: 70, help: "Не допускать режима, где одна сторона сжирает остальные." }
+        ],
+        references: [
+          { label: "Cornell: Effective Study Strategies", url: "https://lsc.cornell.edu/how-to-study/studying-for-and-taking-exams/effective-study-strategies/" },
+          { label: "WHO: Physical activity", url: "https://www.who.int/news-room/fact-sheets/detail/physical-activity" },
+          { label: "CDC: About Sleep", url: "https://www.cdc.gov/sleep/about/index.html" }
+        ]
+      },
+      {
+        id: "reading-operator",
+        title: "Читающий оператор",
+        tag: "Знания",
+        duration: "30 дней",
+        goal: "Перейти из случайного чтения в режим, где книги и статьи реально меняют мышление и действия.",
+        pitch: "Не коллекционировать вкладки, а превращать чтение в силу.",
+        brief: "Программа для тех, кто хочет не просто потреблять тексты, а вытаскивать оттуда идеи, схемы и решения для жизни и работы.",
+        guide: [
+          "Чтение без конспекта и применения часто растворяется в воздухе.",
+          "Тебе нужен цикл: читаю → вычленяю мысль → применяю → возвращаюсь.",
+          "Побеждает не тот, кто читает больше, а тот, кто интегрирует лучше."
+        ],
+        milestones: [
+          "Собрать список важного чтения.",
+          "Научиться выжимать из текста 1-3 сильные мысли.",
+          "Регулярно применять прочитанное."
+        ],
+        dailyQuests: [
+          { id: "read-pages", title: "Прочитать сильный кусок материала", branch: "intellect", suggestedXp: 70, help: "Книга, статья, исследование, эссе, глава." },
+          { id: "read-note", title: "Сделать конспект или карточку мысли", branch: "intellect", suggestedXp: 75, help: "Не копируй всё подряд — выжимай ядро." },
+          { id: "read-apply", title: "Придумать одно применение идеи", branch: "base", suggestedXp: 75, help: "Как это улучшит твою работу, деньги, здоровье или режим?" },
+          { id: "read-repeat", title: "Вернуться к прошлой заметке и укрепить её", branch: "will", suggestedXp: 65, help: "Повторное касание делает знание живым." }
+        ],
+        references: [
+          { label: "Cornell: Effective Study Strategies", url: "https://lsc.cornell.edu/how-to-study/studying-for-and-taking-exams/effective-study-strategies/" }
+        ]
+      },
+      {
+        id: "focus-and-sleep",
+        title: "Фокус через режим",
+        tag: "Фокус / восстановление",
+        duration: "28 дней",
+        goal: "Поднять концентрацию не за счёт постоянного насилия, а за счёт нормального режима и среды.",
+        pitch: "Если режим плохой, фокус почти всегда будет рваться.",
+        brief: "Программа сшивает рекомендации по сну и обучение: ты строишь концентрацию не на кофе и тревоге, а на стабильной базе.",
+        guide: [
+          "Твой фокус начинается ночью, а не утром за ноутбуком.",
+          "Когда режим и среда плохие, любые продвинутые техники работают слабее.",
+          "Сначала база, потом темп."
+        ],
+        milestones: [
+          "Стабильный подъём.",
+          "Меньше вечернего цифрового мусора.",
+          "Хотя бы один сильный фокус-блок в день."
+        ],
+        dailyQuests: [
+          { id: "fs-sleep", title: "Закрыть режим сна без срыва", branch: "will", suggestedXp: 80, help: "Одинаковое время даёт больше, чем случайные попытки лечь рано." },
+          { id: "fs-focus", title: "Сделать один блок концентрации без отвлечений", branch: "intellect", suggestedXp: 90, help: "Таймер, одна задача, чистая среда." },
+          { id: "fs-device", title: "Сократить экранный шум во второй половине дня", branch: "base", suggestedXp: 65, help: "Это помогает и фокусу, и восстановлению." },
+          { id: "fs-log", title: "Отметить, что съело внимание сегодня", branch: "intellect", suggestedXp: 70, help: "Честный лог важнее красивых обещаний." }
+        ],
+        references: [
+          { label: "CDC: About Sleep", url: "https://www.cdc.gov/sleep/about/index.html" },
+          { label: "Cornell: Effective Study Strategies", url: "https://lsc.cornell.edu/how-to-study/studying-for-and-taking-exams/effective-study-strategies/" }
+        ]
+      },
+      {
+        id: "confidence-stack",
+        title: "Уверенность без маски",
+        tag: "Личность",
+        duration: "30 дней",
+        goal: "Поднять уверенность через действие, компетентность и спокойную честность с собой.",
+        pitch: "Не играть роль альфы, а реально стать устойчивее в жизни и общении.",
+        brief: "Программа собирает уверенность из трёх источников: телесная устойчивость, ясность мыслей и повторяемые маленькие акты смелости.",
+        guide: [
+          "Уверенность не появляется от одной мантры. Она собирается из доказательств самому себе.",
+          "Каждый день нужен микро-акт силы: тело, мысль, речь или граница.",
+          "Лучший маршрут — через накопление реальных маленьких побед."
+        ],
+        milestones: [
+          "Меньше самосаботажа в простых ситуациях.",
+          "Более уверенная речь и осанка.",
+          "Больше внутреннего ощущения «я справляюсь»."
+        ],
+        dailyQuests: [
+          { id: "conf-body", title: "Сделать действие на телесную уверенность", branch: "strength", suggestedXp: 75, help: "Тренировка, осанка, дыхание, движение, походка." },
+          { id: "conf-think", title: "Поймать и переписать одну слабую мысль", branch: "intellect", suggestedXp: 70, help: "Не фантазируй про провал — работай с фактами." },
+          { id: "conf-act", title: "Сделать один смелый шаг в реальности", branch: "will", suggestedXp: 90, help: "Сказать, попросить, показать, выступить, отправить, договориться." },
+          { id: "conf-note", title: "Зафиксировать одну маленькую победу дня", branch: "base", suggestedXp: 60, help: "Мозгу нужны доказательства, а не только критика." }
+        ],
+        references: [
+          { label: "Toastmasters: Public Speaking Tips", url: "https://www.toastmasters.org/en-us/resources/public-speaking-tips" }
+        ]
+      },
+      {
+        id: "life-reset",
+        title: "Перезапуск жизни",
+        tag: "Комплексная программа",
+        duration: "30 дней",
+        goal: "Собрать базовую версию себя заново: режим, тело, деньги, голова, порядок, работа.",
+        pitch: "Это большой режим перезапуска, когда всё было раскидано и хочется вернуть контроль.",
+        brief: "Программа смешивает лучшие базовые практики: self-care, движение, сон, порядок, фокус и финансовую ясность.",
+        guide: [
+          "Не пытайся стать идеальным за день. Собери систему, где каждый день возвращает тебя в форму.",
+          "Важен не один блестящий рывок, а плотная серия в течение месяца.",
+          "Если есть хаос, возвращайся к базе: сон, вода, порядок, главное дело, учёт."
+        ],
+        milestones: [
+          "Стабилизировать утро и вечер.",
+          "Вернуть ощущение контроля над средой.",
+          "Поднять общий ресурс и плотность действий."
+        ],
+        dailyQuests: [
+          { id: "reset-base", title: "Собрать базу дня: вода, порядок, план", branch: "base", suggestedXp: 80, help: "Это стартовый набор боеспособности." },
+          { id: "reset-main", title: "Закрыть одно главное дело без избегания", branch: "will", suggestedXp: 95, help: "Главное дело — якорь дня." },
+          { id: "reset-body", title: "Дать телу движение или тренировку", branch: "strength", suggestedXp: 80, help: "Тело должно чувствовать, что жизнь идёт." },
+          { id: "reset-mind", title: "Сделать интеллектуальный или рефлексивный блок", branch: "intellect", suggestedXp: 80, help: "Чтение, учёба, анализ, дневник, стратегия." }
+        ],
+        references: [
+          { label: "WHO: Self-care for health and well-being", url: "https://www.who.int/news-room/fact-sheets/detail/self-care-health-interventions" },
+          { label: "WHO: Physical activity", url: "https://www.who.int/news-room/fact-sheets/detail/physical-activity" },
+          { label: "CDC: About Sleep", url: "https://www.cdc.gov/sleep/about/index.html" }
+        ]
+      }
+    ];
+
+    const VISIBLE_PROGRAMS = PROGRAMS.slice(0, 15);
+
+    function createMilestones() {
+      return milestoneNames.map((name, index) => ({
+        id: `milestone-${index + 1}`,
+        name,
+        levelRequired: (index + 1) * 10,
+        hp: 2400 + index * 450,
+        rewardXp: 240 + index * 18
+      }));
     }
 
-    function closeImportModal() {
-      document.getElementById("importModal").style.display = "none";
+    function xpToNext(level) {
+      return Math.round(200 + level * 72 + Math.pow(level, 1.42) * 34);
     }
 
-    function importSaveCode() {
-      const encoded = document.getElementById("importCode").value.trim();
-      if (!encoded) return alert("Вставь код!");
+    function todayKey() {
+      return new Date().toISOString().slice(0, 10);
+    }
+
+    function createInitialState() {
+      return {
+        playerName: "Игрок",
+        level: 1,
+        exp: 0,
+        expToNext: xpToNext(1),
+        gold: 600,
+        skillPoints: 0,
+        totalXpEarned: 0,
+        totalGoldEarned: 0,
+        questCount: 0,
+        streak: 0,
+        lastDailyDate: "",
+        selectedTab: "overview",
+        selectedQuestTab: "base",
+        selectedProgramId: "income100k",
+        inventory: [],
+        equipped: { weapon: null, armor: null, accessory: null },
+        ownedSkills: [],
+        elements: { fire: 0, water: 0, air: 0, earth: 0, light: 0 },
+        trainedStats: { strength: 0, intellect: 0, will: 0 },
+        dailyQuestDone: {},
+        programDailyDone: {},
+        programProgress: {},
+        planner: [],
+        diary: [],
+        history: ["Система инициализирована."],
+        activeGate: null,
+        milestoneBosses: createMilestones().map(boss => ({ ...boss, currentHp: boss.hp, defeated: false })),
+        flags: { plannerBoost: 0, diaryBonusToday: "" }
+      };
+    }
+
+    function getProgramById(id) {
+      return VISIBLE_PROGRAMS.find(program => program.id === id) || VISIBLE_PROGRAMS[0];
+    }
+
+    let state = loadState();
+    let modalAction = null;
+
+    function loadState() {
       try {
-        const data = JSON.parse(atob(encoded));
-        state = { ...state, ...data };
-        saveState();
-        closeImportModal();
-        alert("✅ Прогресс успешно загружен!");
-        render();
-      } catch(e) {
-        alert("❌ Неверный код сохранения");
+        const raw = localStorage.getItem(STORAGE_KEY);
+        if (!raw) return createInitialState();
+        const parsed = JSON.parse(raw);
+        const base = createInitialState();
+        return {
+          ...base,
+          ...parsed,
+          expToNext: xpToNext(parsed.level || base.level),
+          equipped: { ...base.equipped, ...(parsed.equipped || {}) },
+          elements: { ...base.elements, ...(parsed.elements || {}) },
+          trainedStats: { ...base.trainedStats, ...(parsed.trainedStats || {}) },
+          flags: { ...base.flags, ...(parsed.flags || {}) },
+          selectedProgramId: getProgramById(parsed.selectedProgramId || base.selectedProgramId).id
+        };
+      } catch (error) {
+        console.error(error);
+        return createInitialState();
       }
     }
 
-    // Автоматическая регистрация PWA (уже была)
-    if ('serviceWorker' in navigator) {
-      navigator.serviceWorker.register('sw.js');
+    function saveState() {
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
     }
 
-    // Переопределяем render(), чтобы обновлялось мобильное имя
-    const originalRender = render;
-    render = function() {
-      originalRender();
-      document.getElementById("mobilePlayerName").textContent = state.playerName;
-    };
+    function getSkillMap() {
+      return state.ownedSkills.map(id => SKILLS.find(skill => skill.id === id)).filter(Boolean);
+    }
+
+    function computeBonuses() {
+      const bonuses = {
+        exp: 0,
+        gold: 0,
+        damage: 0,
+        shopDiscount: 0,
+        questGold: 0,
+        bossGold: 0,
+        gateGold: 0,
+        strengthExp: 0,
+        intellectExp: 0,
+        willExp: 0,
+        plannerExp: 0,
+        diaryExp: 0,
+        gearStats: 0,
+        streakDamage: 0,
+        milestoneDamage: 0,
+        highXpGold: 0,
+        openerDamage: 0,
+        finisherDamage: 0,
+        highRankDamage: 0,
+        strengthFlat: 0,
+        intellectFlat: 0,
+        willFlat: 0,
+        airBoost: 0,
+        earthBoost: 0,
+        fireBoost: 0,
+        waterBoost: 0,
+        lightBoost: 0
+      };
+
+      getSkillMap().forEach(skill => {
+        Object.entries(skill.effects).forEach(([key, value]) => {
+          if (typeof bonuses[key] === "number") bonuses[key] += value;
+          else bonuses[key] = value;
+        });
+      });
+
+      const gear = state.equipped;
+      Object.values(gear).forEach(itemId => {
+        const item = SHOP_ITEMS.find(entry => entry.id === itemId);
+        if (!item || !item.bonuses) return;
+        Object.entries(item.bonuses).forEach(([key, value]) => {
+          if (typeof bonuses[key] === "number") bonuses[key] += value;
+        });
+      });
+
+      return bonuses;
+    }
+
+    function computeStats() {
+      const bonuses = computeBonuses();
+      const gearBoost = 1 + bonuses.gearStats;
+      const gearStats = { strength: 0, intellect: 0, will: 0 };
+      Object.values(state.equipped).forEach(itemId => {
+        const item = SHOP_ITEMS.find(entry => entry.id === itemId);
+        if (!item || !item.stats) return;
+        gearStats.strength += item.stats.strength || 0;
+        gearStats.intellect += item.stats.intellect || 0;
+        gearStats.will += item.stats.will || 0;
+      });
+
+      gearStats.strength = Math.round(gearStats.strength * gearBoost);
+      gearStats.intellect = Math.round(gearStats.intellect * gearBoost);
+      gearStats.will = Math.round(gearStats.will * gearBoost);
+
+      const earthMultiplier = 1 + bonuses.earthBoost;
+      const elementFlat = Math.round(state.elements.earth * 4 * earthMultiplier);
+      const stats = {
+        strength: Math.round(12 + state.level * 1.6 + state.trainedStats.strength + gearStats.strength + elementFlat + bonuses.strengthFlat),
+        intellect: Math.round(12 + state.level * 1.6 + state.trainedStats.intellect + gearStats.intellect + elementFlat + bonuses.intellectFlat),
+        will: Math.round(12 + state.level * 1.6 + state.trainedStats.will + gearStats.will + elementFlat + bonuses.willFlat)
+      };
+      stats.power = Math.round(stats.strength * 1.1 + stats.intellect * 1.05 + stats.will * 1.08);
+      stats.bonuses = bonuses;
+      return stats;
+    }
+
+    function gainQuestStats(branch, xp) {
+      const statGain = Math.max(1, Math.round(xp / 70));
+      if (branch === "strength") state.trainedStats.strength += statGain;
+      if (branch === "intellect") state.trainedStats.intellect += statGain;
+      if (branch === "will") state.trainedStats.will += statGain;
+      if (branch === "base") {
+        state.trainedStats.strength += statGain;
+        state.trainedStats.intellect += statGain;
+        state.trainedStats.will += statGain;
+      }
+      return statGain;
+    }
+
+    function getQuestBranchBonus(branch, bonuses) {
+      if (branch === "strength") return bonuses.strengthExp;
+      if (branch === "intellect") return bonuses.intellectExp;
+      if (branch === "will") return bonuses.willExp;
+      return 0;
+    }
+
+    function computeQuestReward(xp, branch) {
+      const stats = computeStats();
+      const bonuses = stats.bonuses;
+      const lightMultiplier = 1 + state.elements.light * (0.06 + bonuses.lightBoost);
+      const boostedXp = Math.round(xp * (1 + bonuses.exp + getQuestBranchBonus(branch, bonuses)) * lightMultiplier);
+      let goldMultiplier = 1 + bonuses.gold + bonuses.questGold;
+      if (xp >= 100) goldMultiplier += bonuses.highXpGold;
+      const gold = Math.max(8, Math.round((xp * (0.34 + state.level * 0.012)) * goldMultiplier + state.level * 2));
+      const baseDamage = Math.round((boostedXp * 1.8) + stats.power * 0.75);
+      const fireMultiplier = 1 + state.elements.fire * (0.08 + bonuses.fireBoost);
+      const airMultiplier = 1 + state.elements.air * (0.05 + bonuses.airBoost);
+      const damage = Math.round(baseDamage * (1 + bonuses.damage) * fireMultiplier * airMultiplier);
+      return { boostedXp, gold, damage };
+    }
+
+    function computeBossReward(boss, type) {
+      const stats = computeStats();
+      const bonuses = stats.bonuses;
+      const lightMultiplier = 1 + state.elements.light * (0.06 + bonuses.lightBoost);
+      const airGoldMultiplier = 1 + state.elements.air * (0.05 + bonuses.airBoost);
+      const bossXp = Math.round(boss.rewardXp * (1 + bonuses.exp) * lightMultiplier);
+      let goldMultiplier = 1 + bonuses.gold + bonuses.bossGold;
+      if (type === "gate") goldMultiplier += bonuses.gateGold;
+      const rewardScale = type === "gate" ? (boss.rewardScale || 1) * 3.1 : 2.2;
+      const gold = Math.round((boss.rewardXp * rewardScale + state.level * 12) * goldMultiplier * airGoldMultiplier);
+      return { bossXp, gold };
+    }
+
+    function pushHistory(text) {
+      const stamp = new Date().toLocaleString("ru-RU", { hour: "2-digit", minute: "2-digit", day: "2-digit", month: "2-digit" });
+      state.history.unshift(`${stamp} — ${text}`);
+      state.history = state.history.slice(0, 80);
+    }
+
+    function gainProgress(xp, gold, source) {
+      const beforeLevel = state.level;
+      state.exp += xp;
+      state.totalXpEarned += xp;
+      state.gold += gold;
+      state.totalGoldEarned += gold;
+      while (state.exp >= state.expToNext) {
+        state.exp -= state.expToNext;
+        state.level += 1;
+        state.expToNext = xpToNext(state.level);
+        if (state.level % 3 === 0) state.skillPoints += 1;
+      }
+      if (state.level > beforeLevel) {
+        pushHistory(`Новый уровень: ${state.level}. Источник: ${source}.`);
+      }
+    }
+
+    function handleBossDamage(damage) {
+      const stats = computeStats();
+      const bonuses = stats.bonuses;
+
+      if (state.activeGate) {
+        let damageValue = damage;
+        if (state.activeGate.rank === "A" || state.activeGate.rank === "S" || state.activeGate.rank === "SS" || state.activeGate.rank === "SSS" || state.activeGate.rank === "EX" || state.activeGate.rank === "Mythic") {
+          damageValue = Math.round(damageValue * (1 + bonuses.highRankDamage));
+        }
+        if (state.activeGate.currentHp === state.activeGate.maxHp) {
+          damageValue = Math.round(damageValue * (1 + bonuses.openerDamage));
+        }
+        if (state.activeGate.currentHp / state.activeGate.maxHp <= 0.25) {
+          damageValue = Math.round(damageValue * (1 + bonuses.finisherDamage));
+        }
+        state.activeGate.currentHp = Math.max(0, state.activeGate.currentHp - damageValue);
+        if (state.activeGate.currentHp === 0) {
+          const reward = computeBossReward(state.activeGate, "gate");
+          gainProgress(reward.bossXp, reward.gold, `Победа над вратами ${state.activeGate.name}`);
+          pushHistory(`Побеждён босс врат ${state.activeGate.name}. Награда: ${reward.gold} золота и ${reward.bossXp} XP.`);
+          state.activeGate = null;
+        }
+      }
+
+      const milestone = state.milestoneBosses.find(boss => !boss.defeated && state.level >= boss.levelRequired);
+      if (milestone) {
+        const milestoneDamage = Math.round(damage * (0.72 + bonuses.milestoneDamage));
+        milestone.currentHp = Math.max(0, milestone.currentHp - milestoneDamage);
+        if (milestone.currentHp === 0) {
+          milestone.defeated = true;
+          const reward = computeBossReward(milestone, "milestone");
+          gainProgress(reward.bossXp, reward.gold, `Победа над этажным боссом ${milestone.name}`);
+          pushHistory(`Этажный босс ${milestone.name} повержен. Награда: ${reward.gold} золота и ${reward.bossXp} XP.`);
+        }
+      }
+    }
+
+    function completeQuest(branch, questId, xpInput) {
+      const xp = Math.max(1, Number(xpInput) || 0);
+      const quest = QUESTS[branch].find(item => item.id === questId);
+      if (!quest) return;
+      const today = todayKey();
+      if (branch === "base" && state.dailyQuestDone[questId] === today) {
+        openModal("Ежедневный лимит", "Это задание основы уже выполнено сегодня.");
+        return;
+      }
+      const reward = computeQuestReward(xp, branch);
+      const statGain = gainQuestStats(branch, xp);
+      gainProgress(reward.boostedXp, reward.gold, quest.title);
+      handleBossDamage(reward.damage);
+      state.questCount += 1;
+      if (branch === "base") {
+        state.dailyQuestDone[questId] = today;
+        if (state.lastDailyDate !== today) {
+          const yesterday = new Date();
+          yesterday.setDate(yesterday.getDate() - 1);
+          const yesterdayKey = yesterday.toISOString().slice(0, 10);
+          state.streak = state.lastDailyDate === yesterdayKey ? state.streak + 1 : 1;
+          state.lastDailyDate = today;
+        }
+      }
+      const statText = branch === "base"
+        ? `Сила +${statGain}, Интеллект +${statGain}, Воля +${statGain}`
+        : branch === "strength"
+          ? `Сила +${statGain}`
+          : branch === "intellect"
+            ? `Интеллект +${statGain}`
+            : `Воля +${statGain}`;
+      pushHistory(`Квест выполнен: ${quest.title}. Получено ${reward.boostedXp} XP, ${reward.gold} золота, нанесено ${reward.damage} урона. ${statText}.`);
+      saveState();
+      render();
+    }
+
+    function getPrice(item) {
+      const bonuses = computeBonuses();
+      const waterBoost = 1 + bonuses.waterBoost;
+      const waterDiscount = state.elements.water * 0.04 * waterBoost;
+      const rawDiscount = bonuses.shopDiscount + waterDiscount;
+      const finalDiscount = Math.min(0.55, rawDiscount);
+      return Math.max(10, Math.round(item.cost * (1 - finalDiscount)));
+    }
+
+    function buyItem(itemId) {
+      const item = SHOP_ITEMS.find(entry => entry.id === itemId);
+      if (!item) return;
+      const price = getPrice(item);
+      if (state.gold < price) {
+        openModal("Недостаточно золота", `Для покупки ${item.name} нужно ${price} золота.`);
+        return;
+      }
+      state.gold -= price;
+      state.inventory.push(item.id);
+      pushHistory(`Куплен предмет: ${item.name} за ${price} золота.`);
+      saveState();
+      render();
+    }
+
+    function useInventoryItem(index) {
+      const itemId = state.inventory[index];
+      const item = SHOP_ITEMS.find(entry => entry.id === itemId);
+      if (!item) return;
+
+      if (item.type === "gear") {
+        const previous = state.equipped[item.slot];
+        state.equipped[item.slot] = item.id;
+        state.inventory.splice(index, 1);
+        if (previous) state.inventory.push(previous);
+        pushHistory(`Экипирован предмет: ${item.name}.`);
+      } else if (item.type === "box") {
+        const keys = Object.keys(ELEMENTS);
+        const picked = keys[Math.floor(Math.random() * keys.length)];
+        state.elements[picked] += 1;
+        state.inventory.splice(index, 1);
+        pushHistory(`Открыта загадочная шкатулка. Стихия ${ELEMENTS[picked].icon} усилена до ${state.elements[picked]}.`);
+      } else if (item.type === "consumable") {
+        const effect = item.effect || {};
+        if (effect.xp || effect.gold) gainProgress(effect.xp || 0, effect.gold || 0, item.name);
+        if (effect.streak) state.streak += effect.streak;
+        if (effect.skillPoints) state.skillPoints += effect.skillPoints;
+        if (effect.diaryAuto) {
+          state.diary.unshift({
+            id: `diary-${Date.now()}`,
+            title: "Автозапись памяти",
+            mood: "Заряженно",
+            text: "Чернила памяти превратились в быструю заметку. День не потерян.",
+            createdAt: new Date().toLocaleString("ru-RU")
+          });
+        }
+        if (effect.bossDamage && state.activeGate) {
+          state.activeGate.currentHp = Math.max(0, state.activeGate.currentHp - effect.bossDamage);
+          pushHistory(`Приманка босса нанесла ${effect.bossDamage} урона ${state.activeGate.name}.`);
+          if (state.activeGate.currentHp === 0) {
+            const reward = computeBossReward(state.activeGate, "gate");
+            gainProgress(reward.bossXp, reward.gold, `Победа над вратами ${state.activeGate.name}`);
+            pushHistory(`Побеждён босс врат ${state.activeGate.name}. Награда: ${reward.gold} золота и ${reward.bossXp} XP.`);
+            state.activeGate = null;
+          }
+        }
+        if (effect.plannerBoost) state.flags.plannerBoost += effect.plannerBoost;
+        state.inventory.splice(index, 1);
+        pushHistory(`Использован предмет: ${item.name}.`);
+      }
+
+      saveState();
+      render();
+    }
+
+    function sellInventoryItem(index) {
+      const itemId = state.inventory[index];
+      const item = SHOP_ITEMS.find(entry => entry.id === itemId);
+      if (!item) return;
+      const value = Math.max(30, Math.round(getPrice(item) * 0.55));
+      state.gold += value;
+      state.inventory.splice(index, 1);
+      pushHistory(`Продан предмет: ${item.name}. Получено ${value} золота.`);
+      saveState();
+      render();
+    }
+
+    function unequipItem(slot) {
+      const itemId = state.equipped[slot];
+      if (!itemId) return;
+      state.inventory.push(itemId);
+      state.equipped[slot] = null;
+      const item = SHOP_ITEMS.find(entry => entry.id === itemId);
+      pushHistory(`Снят предмет: ${item ? item.name : "экипировка"}.`);
+      saveState();
+      render();
+    }
+
+    function unlockSkill(skillId) {
+      const skill = SKILLS.find(entry => entry.id === skillId);
+      if (!skill || state.ownedSkills.includes(skillId)) return;
+      if (state.skillPoints < skill.cost) {
+        openModal("Недостаточно очков", `Для навыка "${skill.name}" нужно ${skill.cost} очка.`);
+        return;
+      }
+      state.skillPoints -= skill.cost;
+      state.ownedSkills.push(skillId);
+      pushHistory(`Открыт навык: ${skill.name}.`);
+      saveState();
+      render();
+    }
+
+    function openGate(rankId) {
+      const rank = GATE_RANKS.find(entry => entry.id === rankId);
+      if (!rank) return;
+      if (state.level < rank.minLevel) {
+        openModal("Ранг закрыт", `Для ранга ${rank.id} нужен уровень ${rank.minLevel}.`);
+        return;
+      }
+      const pool = GATE_BOSSES[rank.id];
+      const boss = pool[Math.floor(Math.random() * pool.length)];
+      state.activeGate = {
+        id: boss.id,
+        name: boss.name,
+        rank: rank.id,
+        rewardXp: boss.rewardXp,
+        rewardScale: boss.rewardScale,
+        maxHp: boss.hp,
+        currentHp: boss.hp
+      };
+      pushHistory(`Открыты врата ранга ${rank.id}. Появился босс ${boss.name}.`);
+      saveState();
+      render();
+    }
+
+    function addPlannerEntry() {
+      const title = document.getElementById("plannerTitle").value.trim();
+      if (!title) return;
+      const note = document.getElementById("plannerNote").value.trim();
+      const xp = Math.max(0, Number(document.getElementById("plannerXp").value) || 0);
+      const due = document.getElementById("plannerDue").value;
+      const type = document.getElementById("plannerType").value;
+      state.planner.unshift({
+        id: `plan-${Date.now()}`,
+        title,
+        note,
+        xp,
+        due,
+        type,
+        done: false,
+        createdAt: new Date().toLocaleString("ru-RU")
+      });
+      pushHistory(`В планер добавлено дело: ${title}.`);
+      document.getElementById("plannerTitle").value = "";
+      document.getElementById("plannerNote").value = "";
+      document.getElementById("plannerXp").value = "";
+      document.getElementById("plannerDue").value = "";
+      saveState();
+      render();
+    }
+
+    function togglePlannerEntry(id) {
+      const entry = state.planner.find(item => item.id === id);
+      if (!entry) return;
+      entry.done = !entry.done;
+      if (entry.done) {
+        const bonusXp = state.flags.plannerBoost || 0;
+        const totalXp = Math.round(entry.xp * (1 + computeBonuses().plannerExp)) + bonusXp;
+        if (totalXp > 0) {
+          const reward = computeQuestReward(totalXp, "base");
+          gainProgress(reward.boostedXp, reward.gold, `Планер: ${entry.title}`);
+          handleBossDamage(Math.round(reward.damage * 0.7));
+          pushHistory(`Дело выполнено: ${entry.title}. Получено ${reward.boostedXp} XP и ${reward.gold} золота.`);
+        } else {
+          pushHistory(`Дело отмечено как выполненное: ${entry.title}.`);
+        }
+        state.flags.plannerBoost = 0;
+      }
+      saveState();
+      render();
+    }
+
+    function deletePlannerEntry(id) {
+      state.planner = state.planner.filter(item => item.id !== id);
+      saveState();
+      render();
+    }
+
+    function addDiaryEntry() {
+      const title = document.getElementById("diaryTitle").value.trim();
+      const text = document.getElementById("diaryText").value.trim();
+      const mood = document.getElementById("diaryMood").value;
+      if (!title || !text) return;
+      state.diary.unshift({
+        id: `diary-${Date.now()}`,
+        title,
+        text,
+        mood,
+        createdAt: new Date().toLocaleString("ru-RU")
+      });
+      const today = todayKey();
+      if (state.flags.diaryBonusToday !== today) {
+        const bonus = computeBonuses();
+        const xp = Math.round(35 * (1 + bonus.diaryExp));
+        gainProgress(xp, 0, `Дневник: ${title}`);
+        state.flags.diaryBonusToday = today;
+      }
+      pushHistory(`Добавлена запись в дневник: ${title}.`);
+      document.getElementById("diaryTitle").value = "";
+      document.getElementById("diaryText").value = "";
+      saveState();
+      render();
+    }
+
+    function deleteDiaryEntry(id) {
+      state.diary = state.diary.filter(entry => entry.id !== id);
+      saveState();
+      render();
+    }
+
+    function renamePlayer() {
+      const current = state.playerName;
+      openModal("Имя героя", "Введи новое имя персонажа.", `
+        <input id="modalInput" placeholder="Новое имя" value="${current.replace(/"/g, "&quot;")}">
+      `, () => {
+        const value = document.getElementById("modalInput").value.trim();
+        if (!value) return;
+        state.playerName = value;
+        saveState();
+        render();
+      });
+    }
+
+    function exportSave() {
+      const blob = new Blob([JSON.stringify(state, null, 2)], { type: "application/json" });
+      const url = URL.createObjectURL(blob);
+      const link = document.createElement("a");
+      link.href = url;
+      link.download = `sytem-save-${todayKey()}.json`;
+      link.click();
+      URL.revokeObjectURL(url);
+    }
+
+    function confirmReset() {
+      openModal("Полный сброс", "Это удалит весь прогресс, предметы, дневник, планер, навыки, врата и стихии. Продолжить?", "", () => {
+        state = createInitialState();
+        saveState();
+        render();
+      });
+    }
+
+    function openModal(title, subtitle, body = "", onConfirm = null) {
+      document.getElementById("modalTitle").textContent = title;
+      document.getElementById("modalSubtitle").textContent = subtitle;
+      document.getElementById("modalBody").innerHTML = body;
+      document.getElementById("modal").classList.add("open");
+      modalAction = onConfirm;
+    }
+
+    function closeModal() {
+      document.getElementById("modal").classList.remove("open");
+      modalAction = null;
+    }
+
+    function renderTabs() {
+      const container = document.getElementById("tabs");
+      container.innerHTML = TABS.map(tab => `
+        <button class="tab-btn ${state.selectedTab === tab.id ? "active" : ""}" data-tab="${tab.id}">${tab.label}</button>
+      `).join("");
+
+      document.querySelectorAll(".section").forEach(section => {
+        section.classList.toggle("active", section.dataset.section === state.selectedTab);
+      });
+    }
+
+    function renderSidebar() {
+      const stats = computeStats();
+      const levelProgress = Math.min(100, (state.exp / state.expToNext) * 100);
+      const bonuses = stats.bonuses;
+      document.getElementById("playerName").textContent = state.playerName;
+      document.getElementById("sidebarLevel").textContent = state.level;
+      document.getElementById("sidebarGold").textContent = state.gold;
+      document.getElementById("sidebarSkillPoints").textContent = state.skillPoints;
+      document.getElementById("sidebarStreak").textContent = state.streak;
+      document.getElementById("levelProgress").style.width = `${levelProgress}%`;
+      document.getElementById("levelSummary").textContent = `${state.exp} / ${state.expToNext} XP до уровня ${state.level + 1}`;
+      document.getElementById("sidebarPower").textContent = stats.power;
+      document.getElementById("statStrength").textContent = stats.strength;
+      document.getElementById("statIntellect").textContent = stats.intellect;
+      document.getElementById("statWill").textContent = stats.will;
+      document.getElementById("expBonusChip").textContent = `EXP +${Math.round((bonuses.exp + state.elements.light * (0.06 + bonuses.lightBoost)) * 100)}%`;
+      document.getElementById("goldBonusChip").textContent = `Gold +${Math.round((bonuses.gold + bonuses.questGold + bonuses.bossGold) * 100)}%`;
+      document.getElementById("damageBonusChip").textContent = `Урон +${Math.round((bonuses.damage + state.elements.fire * (0.08 + bonuses.fireBoost)) * 100)}%`;
+
+      const slots = {
+        weapon: "Оружие",
+        armor: "Броня",
+        accessory: "Артефакт"
+      };
+      document.getElementById("equipmentList").innerHTML = Object.entries(slots).map(([slot, label]) => {
+        const item = SHOP_ITEMS.find(entry => entry.id === state.equipped[slot]);
+        return `
+          <div class="list-item">
+            <div class="slot-row">
+              <strong>${label}</strong>
+              ${item ? `<button class="btn small" data-unequip="${slot}">Снять</button>` : ""}
+            </div>
+            <span class="muted">${item ? item.name : "Пусто"}</span>
+          </div>
+        `;
+      }).join("");
+
+      document.getElementById("elementSummary").innerHTML = Object.entries(ELEMENTS).map(([key, element]) => `
+        <div class="list-item">
+          <strong>${element.icon}</strong>
+          <span class="muted">Уровень ${state.elements[key]}</span>
+        </div>
+      `).join("");
+    }
+
+    function renderOverview() {
+      const stats = computeStats();
+      const nextMilestone = state.milestoneBosses.find(boss => !boss.defeated);
+      const currentProgram = getProgramById(state.selectedProgramId);
+      const currentProgramProgress = getProgramProgress(currentProgram.id);
+      const dailyDone = Object.values(state.dailyQuestDone).filter(date => date === todayKey()).length;
+      document.getElementById("dailyNotice").textContent =
+        `Сегодня выполнено ежедневных квестов основы: ${dailyDone}/30. Ежедневные задания доступны 1 раз в день, остальные ветки можно закрывать сколько угодно.`;
+
+      document.getElementById("overviewCards").innerHTML = `
+        <div class="info-card"><span class="muted">Всего XP</span><strong>${state.totalXpEarned}</strong></div>
+        <div class="info-card"><span class="muted">Всего золота</span><strong>${state.totalGoldEarned}</strong></div>
+        <div class="info-card"><span class="muted">Закрыто квестов</span><strong>${state.questCount}</strong></div>
+        <div class="info-card"><span class="muted">Активный босс врат</span><strong>${state.activeGate ? state.activeGate.name : "Нет"}</strong></div>
+        <div class="info-card"><span class="muted">Следующий этажный босс</span><strong>${nextMilestone ? `${nextMilestone.name} (${nextMilestone.levelRequired} ур.)` : "Все 30 побеждены"}</strong></div>
+        <div class="info-card"><span class="muted">Боевой рейтинг</span><strong>${stats.power}</strong></div>
+        <div class="info-card"><span class="muted">Активная программа</span><strong>${currentProgram.title}</strong></div>
+        <div class="info-card"><span class="muted">Задач в программе</span><strong>${currentProgramProgress.completed}</strong></div>
+      `;
+
+      document.getElementById("historyLog").innerHTML = state.history.length
+        ? state.history.map(item => `<div class="log-item">${item}</div>`).join("")
+        : `<div class="log-item">История пока пуста.</div>`;
+
+      document.getElementById("questFormulaView").textContent =
+        `Gold = XP * (0.34 + уровень*0.012) * (1 + бонусы) + уровень*2. Урон по боссу = усиленный XP * 1.8 + боевой рейтинг * 0.75.`;
+      document.getElementById("bossFormulaView").textContent =
+        `Boss Gold = rewardXP * множитель ранга/этажа + уровень*12, затем применяются бонусы золота и стихии воздуха.`;
+    }
+
+    function renderQuestTabs() {
+      const container = document.getElementById("questTabs");
+      container.innerHTML = QUEST_BRANCHES.map(branch => `
+        <button class="tab-btn ${state.selectedQuestTab === branch.id ? "active" : ""}" data-quest-tab="${branch.id}">${branch.label}</button>
+      `).join("");
+
+      const lists = document.getElementById("questLists");
+      lists.innerHTML = QUEST_BRANCHES.map(branch => {
+        const visible = state.selectedQuestTab === branch.id;
+        return `
+          <div class="section ${visible ? "active" : ""}" data-quest-section="${branch.id}">
+            <div class="card-grid">
+              ${QUESTS[branch.id].map(quest => {
+                const doneToday = branch.daily && state.dailyQuestDone[quest.id] === todayKey();
+                return `
+                  <div class="quest-card">
+                    <div class="rank-badge">${branch.label}</div>
+                    <h4>${quest.title}</h4>
+                    <div class="chip-row">
+                      <span class="chip">Рекомендуемый XP: ${quest.suggestedXp}</span>
+                      <span class="chip">${branch.id === "base" ? "Качает всё" : `Качает: ${branch.label}`}</span>
+                    </div>
+                    <div class="quest-actions">
+                      <input type="number" min="1" step="5" value="${quest.suggestedXp}" id="xp-${quest.id}">
+                      <button class="btn primary" data-complete-quest="${branch.id}|${quest.id}" ${doneToday ? "disabled" : ""}>${doneToday ? "Закрыто" : "Завершить"}</button>
+                    </div>
+                  </div>
+                `;
+              }).join("")}
+            </div>
+          </div>
+        `;
+      }).join("");
+    }
+
+    function getProgramProgress(programId) {
+      return state.programProgress[programId] || { completed: 0, activeDays: 0, lastDate: "" };
+    }
+
+    function selectProgram(programId) {
+      state.selectedProgramId = getProgramById(programId).id;
+      saveState();
+      render();
+    }
+
+    function completeProgramQuest(programId, questId, xpInput) {
+      const program = getProgramById(programId);
+      const quest = program.dailyQuests.find(item => item.id === questId);
+      if (!quest) return;
+
+      const today = todayKey();
+      const doneKey = `${programId}:${questId}:${today}`;
+      if (state.programDailyDone[doneKey]) {
+        openModal("Уже выполнено", "Это ежедневное задание программы уже закрыто сегодня.");
+        return;
+      }
+
+      const xp = Math.max(1, Number(xpInput) || 0);
+      const reward = computeQuestReward(xp, quest.branch);
+      const statGain = gainQuestStats(quest.branch, xp);
+      gainProgress(reward.boostedXp, reward.gold, `${program.title}: ${quest.title}`);
+      handleBossDamage(reward.damage);
+
+      state.programDailyDone[doneKey] = true;
+      const progress = getProgramProgress(programId);
+      progress.completed += 1;
+      if (progress.lastDate !== today) {
+        progress.activeDays += 1;
+        progress.lastDate = today;
+      }
+      state.programProgress[programId] = progress;
+
+      const statText = quest.branch === "base"
+        ? `Сила +${statGain}, Интеллект +${statGain}, Воля +${statGain}`
+        : quest.branch === "strength"
+          ? `Сила +${statGain}`
+          : quest.branch === "intellect"
+            ? `Интеллект +${statGain}`
+            : `Воля +${statGain}`;
+
+      pushHistory(`Программа "${program.title}": выполнено "${quest.title}". Получено ${reward.boostedXp} XP, ${reward.gold} золота, нанесено ${reward.damage} урона. ${statText}.`);
+      saveState();
+      render();
+    }
+
+    function renderPrograms() {
+      const selectedProgram = getProgramById(state.selectedProgramId);
+      const progress = getProgramProgress(selectedProgram.id);
+      const totalTarget = Math.max(1, (Number(selectedProgram.duration.match(/\d+/)?.[0] || 30) * selectedProgram.dailyQuests.length));
+      const progressPercent = Math.min(100, Math.round((progress.completed / totalTarget) * 100));
+
+      document.getElementById("programsGrid").innerHTML = VISIBLE_PROGRAMS.map(program => {
+        const cardProgress = getProgramProgress(program.id);
+        return `
+          <div class="program-card ${selectedProgram.id === program.id ? "active" : ""}" data-select-program="${program.id}">
+            <div class="rank-badge">${program.tag}</div>
+            <h4>${program.title}</h4>
+            <p class="muted">${program.pitch}</p>
+            <div class="chip-row">
+              <span class="chip">${program.duration}</span>
+              <span class="chip gold">Закрыто задач: ${cardProgress.completed || 0}</span>
+            </div>
+          </div>
+        `;
+      }).join("");
+
+      document.getElementById("programDetail").innerHTML = `
+        <div class="program-detail">
+          <div class="program-hero">
+            <div class="rank-badge">${selectedProgram.tag}</div>
+            <h3>${selectedProgram.title}</h3>
+            <p class="muted" style="margin-top:8px;">${selectedProgram.goal}</p>
+            <div class="program-kpis">
+              <div class="list-item">
+                <strong>Длительность</strong>
+                <span class="muted">${selectedProgram.duration}</span>
+              </div>
+              <div class="list-item">
+                <strong>Прогресс</strong>
+                <span class="muted">${progress.completed} закрытых задач</span>
+              </div>
+              <div class="list-item">
+                <strong>Активные дни</strong>
+                <span class="muted">${progress.activeDays}</span>
+              </div>
+              <div class="list-item">
+                <strong>Заполнение программы</strong>
+                <span class="muted">${progressPercent}%</span>
+              </div>
+            </div>
+            <div class="progress"><span style="width:${progressPercent}%"></span></div>
+            <div class="footer-note">${selectedProgram.brief}</div>
+          </div>
+
+          <div class="program-guide-grid">
+            ${selectedProgram.guide.map(item => `
+              <div class="program-guide">
+                <strong>Подсказка</strong>
+                <div class="muted" style="margin-top:8px;">${item}</div>
+              </div>
+            `).join("")}
+          </div>
+
+          <div style="margin-top:16px;">
+            <h3>Контрольные этапы</h3>
+            <div class="program-guide-grid" style="margin-top:12px;">
+              ${selectedProgram.milestones.map(item => `
+                <div class="program-guide">
+                  <strong>Этап</strong>
+                  <div class="muted" style="margin-top:8px;">${item}</div>
+                </div>
+              `).join("")}
+            </div>
+          </div>
+
+          <div style="margin-top:16px;">
+            <h3>Ежедневные задания программы</h3>
+            <p class="muted">Это отдельная ежедневная ветка именно под эту цель. Она живёт отдельно от обычных квестов и помогает дойти до результата по шагам.</p>
+            <div class="program-quest-grid" style="margin-top:12px;">
+              ${selectedProgram.dailyQuests.map(quest => {
+                const doneToday = !!state.programDailyDone[`${selectedProgram.id}:${quest.id}:${todayKey()}`];
+                return `
+                  <div class="program-quest-card">
+                    <div class="rank-badge">${quest.branch === "base" ? "Качает всё" : `Качает ${quest.branch === "strength" ? "силу" : quest.branch === "intellect" ? "интеллект" : "волю"}`}</div>
+                    <h4>${quest.title}</h4>
+                    <p class="muted">${quest.help}</p>
+                    <div class="chip-row">
+                      <span class="chip">Рекомендуемый XP: ${quest.suggestedXp}</span>
+                      <span class="chip gold">${doneToday ? "Сегодня закрыто" : "Доступно сейчас"}</span>
+                    </div>
+                    <div class="quest-actions">
+                      <input type="number" min="1" step="5" value="${quest.suggestedXp}" id="program-xp-${selectedProgram.id}-${quest.id}">
+                      <button class="btn primary" data-complete-program-quest="${selectedProgram.id}|${quest.id}" ${doneToday ? "disabled" : ""}>${doneToday ? "Закрыто" : "Завершить"}</button>
+                    </div>
+                  </div>
+                `;
+              }).join("")}
+            </div>
+          </div>
+
+          <div style="margin-top:16px;">
+            <h3>Справки и опоры</h3>
+            <div class="program-reference-list" style="margin-top:12px;">
+              ${selectedProgram.references.length
+                ? selectedProgram.references.map(reference => `<a href="${reference.url}" target="_blank" rel="noreferrer">${reference.label}</a>`).join("")
+                : `<div class="program-guide"><strong>Авторская программа</strong><div class="muted" style="margin-top:8px;">Эта программа собрана как игровая производственная траектория на базе практики развития, даже если у неё нет прямой внешней справки в списке.</div></div>`}
+            </div>
+          </div>
+        </div>
+      `;
+    }
+
+    function renderGates() {
+      document.getElementById("gateRanks").innerHTML = GATE_RANKS.map(rank => `
+        <div class="boss-card">
+          <div class="rank-badge">Ранг ${rank.id}</div>
+          <h4>Врата ${rank.id}</h4>
+          <p class="muted">Минимальный уровень: ${rank.minLevel}</p>
+          <div class="chip-row">
+            <span class="chip">База HP: ${rank.bossHp}</span>
+            <span class="chip gold">Множитель наград ${rank.rewardScale.toFixed(2)}x</span>
+          </div>
+          <div class="gate-actions">
+            <button class="btn primary" data-open-gate="${rank.id}" ${state.level < rank.minLevel ? "disabled" : ""}>Открыть врата</button>
+          </div>
+        </div>
+      `).join("");
+
+      const active = document.getElementById("activeGateBoss");
+      if (!state.activeGate) {
+        active.innerHTML = `<div class="list-item"><strong>Нет активного босса</strong><span class="muted">Выбери ранг врат слева, чтобы начать охоту.</span></div>`;
+      } else {
+        const reward = computeBossReward(state.activeGate, "gate");
+        active.innerHTML = `
+          <div class="boss-card">
+            <div class="rank-badge">Ранг ${state.activeGate.rank}</div>
+            <h4>${state.activeGate.name}</h4>
+            <p class="muted">Урон наносится за выполнение квестов и за использование отдельных предметов.</p>
+            <div class="boss-health">
+              <div class="progress"><span style="width:${(state.activeGate.currentHp / state.activeGate.maxHp) * 100}%"></span></div>
+              <div class="footer-note">${state.activeGate.currentHp} / ${state.activeGate.maxHp} HP</div>
+            </div>
+            <div class="chip-row">
+              <span class="chip">Награда XP: ${reward.bossXp}</span>
+              <span class="chip gold">Награда золота: ${reward.gold}</span>
+            </div>
+          </div>
+        `;
+      }
+
+      document.getElementById("milestoneBosses").innerHTML = state.milestoneBosses.map(boss => {
+        const unlocked = state.level >= boss.levelRequired;
+        const progress = Math.max(0, (boss.currentHp / boss.hp) * 100);
+        return `
+          <div class="boss-card">
+            <div class="rank-badge">Этаж ${boss.levelRequired}</div>
+            <h4>${boss.name}</h4>
+            <p class="muted">${boss.defeated ? "Побеждён." : unlocked ? "Открыт и принимает урон от квестов." : `Откроется на ${boss.levelRequired} уровне.`}</p>
+            <div class="progress"><span style="width:${boss.defeated ? 0 : progress}%"></span></div>
+            <div class="footer-note">${boss.defeated ? "0" : boss.currentHp} / ${boss.hp} HP</div>
+          </div>
+        `;
+      }).join("");
+    }
+
+    function renderShop() {
+      const groups = [
+        {
+          id: "system",
+          title: "Системные предметы",
+          description: "Боевая экипировка, шкатулки, усилители и вся RPG-часть прогресса."
+        },
+        {
+          id: "real",
+          title: "Реальная жизнь",
+          description: "Комфорт, здоровье, отдых, обучение и приятные реальные награды. Эту витрину я сильно расширил."
+        }
+      ];
+
+      document.getElementById("shopGrid").innerHTML = groups.map(group => `
+        <div class="shop-group">
+          <div class="shop-group-head">
+            <h3>${group.title}</h3>
+            <p class="muted">${group.description}</p>
+          </div>
+          <div class="shop-grid">
+            ${SHOP_ITEMS.filter(item => item.category === group.id).map(item => `
+              <div class="shop-card">
+                <div class="rank-badge">${item.tag}</div>
+                <h4>${item.name}</h4>
+                <p class="muted">${item.desc}</p>
+                <div class="chip-row">
+                  <span class="chip">${item.type === "gear" ? `Слот: ${item.slot}` : item.type === "box" ? "Шкатулка" : "Расходник"}</span>
+                  <span class="chip gold">${getPrice(item)} золота</span>
+                </div>
+                <div class="row-actions">
+                  <button class="btn primary" data-buy-item="${item.id}">Купить</button>
+                </div>
+              </div>
+            `).join("")}
+          </div>
+        </div>
+      `).join("");
+    }
+
+    function renderInventory() {
+      const container = document.getElementById("inventoryList");
+      if (!state.inventory.length) {
+        container.innerHTML = `<div class="list-item"><strong>Инвентарь пуст</strong><span class="muted">Пора заглянуть в магазин.</span></div>`;
+      } else {
+        container.innerHTML = state.inventory.map((itemId, index) => {
+          const item = SHOP_ITEMS.find(entry => entry.id === itemId);
+          return `
+            <div class="list-item">
+              <div class="list-title">
+                <div>
+                  <strong>${item.name}</strong>
+                  <div class="muted">${item.desc}</div>
+                </div>
+                <span class="chip">${item.type === "gear" ? "Экипировка" : item.type === "box" ? "Шкатулка" : "Расходник"}</span>
+              </div>
+              <div class="row-actions">
+                <button class="btn primary" data-use-item="${index}">${item.type === "gear" ? "Экипировать" : item.type === "box" ? "Открыть" : "Использовать"}</button>
+                <button class="btn" data-sell-item="${index}">Продать</button>
+              </div>
+            </div>
+          `;
+        }).join("");
+      }
+
+      document.getElementById("elementGrid").innerHTML = Object.entries(ELEMENTS).map(([key, element]) => `
+        <div class="element-card">
+          <div class="rank-badge">${element.icon}</div>
+          <strong>${state.elements[key]}</strong>
+          <p class="muted">${element.description}</p>
+        </div>
+      `).join("");
+    }
+
+    function renderSkills() {
+      document.getElementById("skillsOwnedChip").textContent = `Открыто ${state.ownedSkills.length}/30`;
+      document.getElementById("skillsPointsChip").textContent = `Очков: ${state.skillPoints}`;
+      document.getElementById("skillsGrid").innerHTML = SKILLS.map(skill => {
+        const owned = state.ownedSkills.includes(skill.id);
+        return `
+          <div class="skill-card">
+            <div class="rank-badge">Стоимость ${skill.cost}</div>
+            <h4>${skill.name}</h4>
+            <p class="muted">${skill.desc}</p>
+            <div class="row-actions">
+              <button class="btn primary" data-buy-skill="${skill.id}" ${owned ? "disabled" : ""}>${owned ? "Открыт" : "Изучить"}</button>
+            </div>
+          </div>
+        `;
+      }).join("");
+    }
+
+    function renderPlanner() {
+      document.getElementById("plannerList").innerHTML = state.planner.length
+        ? state.planner.map(entry => `
+          <div class="list-item ${entry.done ? "done" : ""}">
+            <div class="list-title">
+              <div>
+                <strong>${entry.title}</strong>
+                <div class="muted">${entry.note || "Без описания"}</div>
+              </div>
+              <span class="chip">${entry.type}</span>
+            </div>
+            <div class="chip-row">
+              <span class="chip">XP: ${entry.xp}</span>
+              <span class="chip">${entry.due ? `Срок: ${entry.due}` : "Без срока"}</span>
+              <span class="chip">${entry.createdAt}</span>
+            </div>
+            <div class="row-actions">
+              <button class="btn primary" data-toggle-plan="${entry.id}">${entry.done ? "Вернуть в работу" : "Отметить выполненным"}</button>
+              <button class="btn" data-delete-plan="${entry.id}">Удалить</button>
+            </div>
+          </div>
+        `).join("")
+        : `<div class="list-item"><strong>Пока нет дел</strong><span class="muted">Добавь первую задачу или привычку.</span></div>`;
+    }
+
+    function renderDiary() {
+      document.getElementById("diaryList").innerHTML = state.diary.length
+        ? state.diary.map(entry => `
+          <div class="list-item">
+            <div class="list-title">
+              <div>
+                <strong>${entry.title}</strong>
+                <div class="muted">${entry.createdAt}</div>
+              </div>
+              <span class="chip">${entry.mood}</span>
+            </div>
+            <div>${entry.text}</div>
+            <div class="row-actions">
+              <button class="btn" data-delete-diary="${entry.id}">Удалить</button>
+            </div>
+          </div>
+        `).join("")
+        : `<div class="list-item"><strong>Дневник пуст</strong><span class="muted">Добавь первую запись, чтобы начать историю прогресса.</span></div>`;
+    }
+
+    function bindEvents() {
+      document.querySelectorAll("[data-tab]").forEach(button => {
+        button.onclick = () => {
+          state.selectedTab = button.dataset.tab;
+          saveState();
+          render();
+        };
+      });
+
+      document.querySelectorAll("[data-quest-tab]").forEach(button => {
+        button.onclick = () => {
+          state.selectedQuestTab = button.dataset.questTab;
+          saveState();
+          render();
+        };
+      });
+
+      document.querySelectorAll("[data-select-program]").forEach(button => {
+        button.onclick = () => selectProgram(button.dataset.selectProgram);
+      });
+
+      document.querySelectorAll("[data-complete-quest]").forEach(button => {
+        button.onclick = () => {
+          const [branch, questId] = button.dataset.completeQuest.split("|");
+          const input = document.getElementById(`xp-${questId}`);
+          completeQuest(branch, questId, input ? input.value : 0);
+        };
+      });
+
+      document.querySelectorAll("[data-complete-program-quest]").forEach(button => {
+        button.onclick = () => {
+          const [programId, questId] = button.dataset.completeProgramQuest.split("|");
+          const input = document.getElementById(`program-xp-${programId}-${questId}`);
+          completeProgramQuest(programId, questId, input ? input.value : 0);
+        };
+      });
+
+      document.querySelectorAll("[data-open-gate]").forEach(button => {
+        button.onclick = () => openGate(button.dataset.openGate);
+      });
+
+      document.querySelectorAll("[data-buy-item]").forEach(button => {
+        button.onclick = () => buyItem(button.dataset.buyItem);
+      });
+
+      document.querySelectorAll("[data-use-item]").forEach(button => {
+        button.onclick = () => useInventoryItem(Number(button.dataset.useItem));
+      });
+
+      document.querySelectorAll("[data-sell-item]").forEach(button => {
+        button.onclick = () => sellInventoryItem(Number(button.dataset.sellItem));
+      });
+
+      document.querySelectorAll("[data-unequip]").forEach(button => {
+        button.onclick = () => unequipItem(button.dataset.unequip);
+      });
+
+      document.querySelectorAll("[data-buy-skill]").forEach(button => {
+        button.onclick = () => unlockSkill(button.dataset.buySkill);
+      });
+
+      document.querySelectorAll("[data-toggle-plan]").forEach(button => {
+        button.onclick = () => togglePlannerEntry(button.dataset.togglePlan);
+      });
+
+      document.querySelectorAll("[data-delete-plan]").forEach(button => {
+        button.onclick = () => deletePlannerEntry(button.dataset.deletePlan);
+      });
+
+      document.querySelectorAll("[data-delete-diary]").forEach(button => {
+        button.onclick = () => deleteDiaryEntry(button.dataset.deleteDiary);
+      });
+    }
+
+    function render() {
+      saveState();
+      renderTabs();
+      renderSidebar();
+      renderOverview();
+      renderQuestTabs();
+      renderPrograms();
+      renderGates();
+      renderShop();
+      renderInventory();
+      renderSkills();
+      renderPlanner();
+      renderDiary();
+      bindEvents();
+    }
+
+    document.getElementById("renameBtn").addEventListener("click", renamePlayer);
+    document.getElementById("exportBtn").addEventListener("click", exportSave);
+    document.getElementById("resetBtn").addEventListener("click", confirmReset);
+    document.getElementById("addPlannerBtn").addEventListener("click", addPlannerEntry);
+    document.getElementById("addDiaryBtn").addEventListener("click", addDiaryEntry);
+    document.getElementById("modalClose").addEventListener("click", closeModal);
+    document.getElementById("modalConfirm").addEventListener("click", () => {
+      if (modalAction) modalAction();
+      closeModal();
+    });
+    document.getElementById("modal").addEventListener("click", event => {
+      if (event.target.id === "modal") closeModal();
+    });
+
+    render();
   </script>
 </body>
 </html>
